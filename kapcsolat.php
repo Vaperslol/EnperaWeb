@@ -43,11 +43,6 @@ require_once __DIR__ . '/includes/header.php';
 ?>
 
 <main class="main-bg">
-    <div class="panel-logo-box">
-        <img alt="N/A embléma" class="logo-panel-dark" decoding="async" height="1080" src="kepek/logo/Panel-White.png" width="1080" />
-        <img alt="N/A embléma" class="logo-panel-light" decoding="async" height="1080" src="kepek/logo/Panel-Black.png" width="1080" />
-    </div>
-
     <!-- HERO -->
     <section class="kapcsolat-hero">
         <div class="container text-center">

@@ -12,6 +12,72 @@ $latestNews = db_get_latest_news(3);
 ?>
 
 <main class="main-bg">
+    <!-- LEGFRISSEBB HÍREK (FŐOLDAL TETEJÉN SZÉPEN ELRENDEZVE) -->
+    <section class="home-news-section py-5">
+        <div class="container py-4">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 gap-3 border-bottom pb-4" style="border-color: var(--border-color) !important;">
+                <div>
+                    <p class="text-accent fw-bold text-uppercase mb-1" style="letter-spacing: 2px; font-size: 0.9rem;">
+                        Zenekari frissítések & bejelentések
+                    </p>
+                    <h2 class="section-title text-accent mb-0" style="font-size: clamp(2rem, 5vw, 3rem);">
+                        Legfrissebb hírek
+                    </h2>
+                </div>
+                <div>
+                    <a class="btn btn-custom d-inline-flex align-items-center gap-2" href="hirek.php">
+                        <span>Összes hír</span>
+                        <svg class="line-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="row g-4" id="homeNewsContainer">
+                <?php if (empty($latestNews)): ?>
+                    <div class="col-12 text-center py-4">
+                        <p class="text-muted-custom mb-0">Még nincs feltöltött hír.</p>
+                    </div>
+                <?php else: ?>
+                    <?php foreach ($latestNews as $item): ?>
+                        <div class="col-lg-4 col-md-6">
+                            <article class="card card-custom h-100 news-top-card">
+                                <?php 
+                                    $img = trim($item['image'] ?? '');
+                                    $hasRealImage = (!empty($img) && stripos($img, 'news-default.svg') === false);
+                                ?>
+                                <?php if ($hasRealImage): ?>
+                                    <div class="card-image-box">
+                                        <img src="<?= e(normalize_image_url($img)) ?>" alt="<?= e($item['title']) ?>" class="card-img-top news-card-image" loading="lazy" decoding="async" />
+                                    </div>
+                                <?php endif; ?>
+                                <div class="card-body d-flex flex-column p-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="badge bg-secondary"><?= e($item['type']) ?></span>
+                                        <small class="news-date text-muted-custom">
+                                            <svg class="line-icon me-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px; display: inline-block; vertical-align: -1px;">
+                                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                                            </svg>
+                                            <?= format_hungarian_date($item['date']) ?>
+                                        </small>
+                                    </div>
+                                    <h3 class="card-title text-accent h5 mb-3 fw-bold"><?= e($item['title']) ?></h3>
+                                    <p class="card-text text-muted-custom flex-grow-1 mb-0" style="line-height: 1.6;">
+                                        <?= nl2br(e($item['text'])) ?>
+                                    </p>
+                                </div>
+                            </article>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+        </div>
+    </section>
+
     <!-- HERO -->
     <section class="hero">
         <div class="container">
@@ -238,57 +304,6 @@ $latestNews = db_get_latest_news(3);
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- LEGFRISSEBB HÍREK (SZERVEROLDALI PHP RENDERELÉS) -->
-    <section class="py-5 section-bg">
-        <div class="container py-4">
-            <div class="text-center mb-5">
-                <h2 class="section-title text-accent">
-                    Legfrissebb hírek
-                </h2>
-
-                <p class="text-muted-custom">
-                    A legutóbbi bejelentések és frissítések az N/A életéből.
-                </p>
-            </div>
-
-            <div class="row g-4" id="homeNewsContainer">
-                <?php if (empty($latestNews)): ?>
-                    <div class="col-12 text-center">
-                        <p class="text-muted-custom">Még nincs feltöltött hír.</p>
-                    </div>
-                <?php else: ?>
-                    <?php foreach ($latestNews as $item): ?>
-                        <div class="col-lg-4 col-md-6">
-                            <article class="card card-custom h-100">
-                                <?php if (!empty($item['image'])): ?>
-                                    <div class="card-image-box">
-                                        <img src="<?= e(normalize_image_url($item['image'])) ?>" alt="<?= e($item['title']) ?>" class="card-img-top news-card-image" loading="lazy" decoding="async" />
-                                    </div>
-                                <?php endif; ?>
-                                <div class="card-body d-flex flex-column">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span class="badge bg-secondary"><?= e($item['type']) ?></span>
-                                        <small class="news-date"><?= format_hungarian_date($item['date']) ?></small>
-                                    </div>
-                                    <h3 class="card-title text-accent h5"><?= e($item['title']) ?></h3>
-                                    <p class="card-text text-muted-custom mt-2 flex-grow-1">
-                                        <?= nl2br(e($item['text'])) ?>
-                                    </p>
-                                </div>
-                            </article>
-                        </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
-            </div>
-
-            <div class="text-center mt-4">
-                <a class="btn btn-custom" href="hirek.php">
-                    Összes hír
-                </a>
             </div>
         </div>
     </section>

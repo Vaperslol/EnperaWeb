@@ -258,31 +258,37 @@ body.lightmode .theme-preset-dot {
     bottom: 25px;
     z-index: 9999;
 
-    width: 55px;
-    height: 55px;
-    border: 1px solid var(--border-hover);
+    width: 54px;
+    height: 54px;
     border-radius: 50%;
 
-    background-color: var(--bg-card);
-    box-shadow: 0 8px 20px var(--shadow-color);
+    /* Dark mode-ban világos gombalap a fekete napocskának */
+    background-color: #ffffff;
+    border: 2px solid rgba(255, 255, 255, 0.65);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 16px rgba(255, 255, 255, 0.25);
 
     display: flex;
     align-items: center;
     justify-content: center;
 
     cursor: pointer;
-    transition: 0.25s ease;
+    transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 #kapcsolo:hover {
-    transform: scale(1.08);
-    border-color: var(--accent);
-    box-shadow: 0 0 16px var(--glow-color);
+    transform: scale(1.1);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6), 0 0 22px rgba(255, 255, 255, 0.45);
 }
 
 #kapcsolo img {
     width: 28px;
     height: 28px;
+    filter: none !important;
+    transition: transform 0.3s ease;
+}
+
+#kapcsolo:hover img {
+    transform: rotate(20deg);
 }
 
 /* Dark mode-ban a fekete napocska látszik */
@@ -294,7 +300,18 @@ body.lightmode .theme-preset-dot {
     display: block;
 }
 
-/* Light mode-ban a holdacska látszik */
+/* Light mode-ban a fehér holdacska látszik a sötét gombon */
+body.lightmode #kapcsolo {
+    background-color: #141417;
+    border: 2px solid rgba(0, 0, 0, 0.25);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2), 0 0 14px rgba(0, 0, 0, 0.1);
+}
+
+body.lightmode #kapcsolo:hover {
+    transform: scale(1.1);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25), 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
 body.lightmode #kapcsolo img:first-child {
     display: block;
 }
@@ -303,46 +320,138 @@ body.lightmode #kapcsolo img:last-child {
     display: none;
 }
 
-/* LOGÓK */
+/* ========================================================
+   LOGÓK ÉS KÖZÉPRE IGAZÍTOTT KÖR ALAKÚ FŐOLDAL GOMB
+   ======================================================== */
 
 .logo-text-dark,
-.logo-text-light,
 .logo-panel-dark,
-.logo-panel-light {
+.logo-empera-dark {
     display: block;
 }
 
 .logo-text-light,
-.logo-panel-light {
+.logo-panel-light,
+.logo-empera-light {
     display: none;
 }
 
 body.lightmode .logo-text-dark,
-body.lightmode .logo-panel-dark {
+body.lightmode .logo-panel-dark,
+body.lightmode .logo-empera-dark {
     display: none;
 }
 
 body.lightmode .logo-text-light,
-body.lightmode .logo-panel-light {
+body.lightmode .logo-panel-light,
+body.lightmode .logo-empera-light {
     display: block;
 }
 
-/* NAVBAR LOGÓ */
-
+/* KÖZÉPRE IGAZÍTOTT KÖRVONALAS NAVBAR LOGÓ (FŐOLDAL GOMB) */
 .navbar-brand-logo {
-    display: flex;
+    position: absolute;
+    left: 50%;
+    top: 6px;
+    transform: translateX(-50%);
+    width: 98px;
+    height: 98px;
+    border-radius: 50%;
+    background-color: var(--bg-section);
+    border: 2.5px solid var(--border-hover);
+    display: inline-flex !important;
     align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
     text-decoration: none;
+    z-index: 5020;
+    overflow: hidden;
+    pointer-events: auto !important;
+    box-shadow:
+        0 10px 26px rgba(0, 0, 0, 0.55),
+        0 0 16px var(--glow-color);
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.28s ease,
+                background-color 0.28s ease;
+    cursor: pointer;
+}
+
+.navbar-brand-logo::before {
+    display: none !important;
 }
 
 .navbar-brand-logo img {
-    height: 34px;
-    width: auto;
-    display: block;
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+    border-radius: 50%;
+    filter: none !important;
+    transition: transform 0.25s ease;
 }
 
-/* HERO LOGÓ */
+/* Szigorú képmegjelenítés: dark módban CSAK a fehér logó látszik, light módban CSAK a fekete */
+.navbar-brand-logo .logo-empera-dark {
+    display: block !important;
+    margin: 0 auto;
+}
 
+.navbar-brand-logo .logo-empera-light {
+    display: none !important;
+}
+
+body.lightmode .navbar-brand-logo .logo-empera-dark {
+    display: none !important;
+}
+
+body.lightmode .navbar-brand-logo .logo-empera-light {
+    display: block !important;
+    margin: 0 auto;
+}
+
+.navbar-brand-logo:hover {
+    transform: translateX(-50%) translateY(3px) scale(1.06);
+    border-color: var(--accent);
+    box-shadow:
+        0 14px 34px rgba(0, 0, 0, 0.65),
+        0 0 24px var(--glow-color);
+}
+
+.navbar-brand-logo:hover img {
+    transform: scale(1.05);
+}
+
+.navbar-brand-logo.active {
+    border-color: var(--accent);
+    box-shadow:
+        0 10px 28px rgba(0, 0, 0, 0.55),
+        0 0 18px var(--glow-color);
+}
+
+body.lightmode .navbar-brand-logo {
+    background-color: var(--bg-section);
+    border-color: rgba(0, 0, 0, 0.3);
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.12),
+        0 0 14px rgba(0, 0, 0, 0.05);
+}
+
+body.lightmode .navbar-brand-logo:hover {
+    border-color: var(--accent);
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.18),
+        0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+body.lightmode .navbar-brand-logo.active {
+    border-color: var(--accent);
+    box-shadow:
+        0 10px 26px rgba(0, 0, 0, 0.16),
+        0 0 16px rgba(0, 0, 0, 0.08);
+}
+
+/* HERO ÉS PANEL LOGÓ HELYŐRZŐK */
 .hero-logo-box {
     max-width: 620px;
     margin-bottom: 26px;
@@ -352,8 +461,6 @@ body.lightmode .logo-panel-light {
     width: 100%;
     height: auto;
 }
-
-/* PANEL / EMBLÉMA LOGÓ */
 
 .panel-logo-box {
     max-width: 280px;
@@ -365,22 +472,37 @@ body.lightmode .logo-panel-light {
     height: auto;
 }
 
-/* Kisebb képernyőn */
+/* FŐOLDAL TETEJÉN LÉVŐ HÍREK SZEKCIÓ */
+.home-news-section {
+    position: relative;
+    background-color: var(--bg-main);
+    border-bottom: 1px solid var(--border-color);
+}
 
-@media (max-width: 768px) {
-    .navbar-brand-logo img {
-        height: 28px;
-    }
+.news-top-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+    overflow: hidden;
+}
 
-    .hero-logo-box {
-        max-width: 420px;
-        margin-left: auto;
-        margin-right: auto;
-    }
+.news-top-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--accent);
+    box-shadow: 0 12px 30px var(--shadow-color), 0 0 20px var(--glow-color);
+}
 
-    .panel-logo-box {
-        max-width: 200px;
-    }
+.news-top-card .card-body {
+    padding: 1.6rem;
+}
+
+.news-top-card .badge {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    border-radius: 8px;
+    letter-spacing: 0.5px;
+    font-weight: 700;
 }
 
 /* FŐOLDAL BETŰTÍPUS */
@@ -527,106 +649,7 @@ img { max-width: 100%; height: auto; }
     }
 }
 
-/* LOGÓ A NAVBARBAN - javított dark/light/hover váltás */
-.navbar-brand-logo {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    padding: 8px 12px;
-    border-radius: 16px;
-    isolation: isolate;
-    transition: transform 0.25s ease, filter 0.25s ease;
-}
-
-.navbar-brand-logo::before {
-    content: "";
-    position: absolute;
-    inset: -8px -10px;
-    z-index: -1;
-    border-radius: 20px;
-    background:
-        radial-gradient(circle at center, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02) 52%, transparent 72%);
-    box-shadow:
-        0 0 20px rgba(255, 255, 255, 0.08),
-        0 10px 26px rgba(0, 0, 0, 0.42);
-    opacity: 0.72;
-    transition: opacity 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.navbar-brand-logo:hover {
-    transform: translateY(-1px);
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.25));
-}
-
-.navbar-brand-logo:hover::before {
-    opacity: 1;
-    transform: scale(1.06);
-    box-shadow:
-        0 0 28px rgba(255, 255, 255, 0.18),
-        0 12px 34px rgba(0, 0, 0, 0.52);
-}
-
-.navbar-brand-logo img {
-    height: 38px;
-    width: auto;
-    max-width: min(260px, 58vw);
-}
-
-/* Alap: dark mode = fehér logó látszik, fekete rejtve */
-.navbar-brand-logo .logo-text-dark {
-    display: block !important;
-}
-
-.navbar-brand-logo .logo-text-light {
-    display: none !important;
-}
-
-/* Light mode = fekete logó látszik, fehér rejtve */
-body.lightmode .navbar-brand-logo .logo-text-dark {
-    display: none !important;
-}
-
-body.lightmode .navbar-brand-logo .logo-text-light {
-    display: block !important;
-}
-
-/* Hover dark modeban: ellenkező szín, tehát fekete logó */
-body:not(.lightmode) .navbar-brand-logo:hover .logo-text-dark {
-    display: none !important;
-}
-
-body:not(.lightmode) .navbar-brand-logo:hover .logo-text-light {
-    display: block !important;
-}
-
-/* Hover light modeban: ellenkező szín, tehát fehér logó */
-body.lightmode .navbar-brand-logo:hover .logo-text-dark {
-    display: block !important;
-}
-
-body.lightmode .navbar-brand-logo:hover .logo-text-light {
-    display: none !important;
-}
-
-@media (max-width: 768px) {
-    .navbar-brand-logo {
-        padding: 7px 9px;
-        border-radius: 14px;
-    }
-
-    .navbar-brand-logo::before {
-        inset: -6px -8px;
-        border-radius: 18px;
-    }
-
-    .navbar-brand-logo img {
-        height: 30px;
-        max-width: 62vw;
-    }
-}
-/* 2026 szerkezeti animációk + navbar margó/logó javítás */
+/* 2026 szerkezeti animációk + navbar beállítások */
 html {
     scroll-behavior: smooth;
 }
@@ -635,9 +658,15 @@ body {
     overflow-x: hidden;
 }
 
-/* Navbar: ne vágódjon be a logó, legyen kényelmes margó */
+/* NAVBAR ELRENDEZÉS ÉS MEGJELENÉS */
 .navbar-custom {
     min-height: 72px;
+    background-color: var(--bg-section);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 5000;
+    isolation: isolate;
     overflow: visible;
 }
 
@@ -645,91 +674,52 @@ body {
     min-height: 72px;
     padding-left: clamp(16px, 3vw, 42px);
     padding-right: clamp(16px, 3vw, 42px);
-    gap: 16px;
-}
-
-.navbar-brand-logo {
     position: relative;
-    display: inline-flex !important;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 12px;
-    margin-left: 0;
-    border-radius: 16px;
-    line-height: 1;
-    isolation: isolate;
     overflow: visible;
-    transform-origin: center;
-    transition: transform 0.25s ease, filter 0.25s ease;
 }
 
-.navbar-brand-logo::before {
-    content: "";
-    position: absolute;
-    inset: -7px -9px;
-    z-index: -1;
-    border-radius: 20px;
-    background:
-        radial-gradient(circle at center, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02) 54%, transparent 74%);
-    box-shadow:
-        0 0 20px rgba(255, 255, 255, 0.08),
-        0 10px 26px rgba(0, 0, 0, 0.42);
-    opacity: 0.72;
-    transition: opacity 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
-}
+/* DESKTOP ELRENDEZÉS (>=992px): a kör alakú logó két oldalára rendezett menüpontok */
+@media (min-width: 992px) {
+    .navbar-custom .navbar-collapse {
+        display: flex !important;
+        align-items: center;
+        width: 100%;
+        pointer-events: none;
+    }
 
-.navbar-brand-logo:hover {
-    transform: translateY(-1px);
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.25));
-}
+    .navbar-custom .nav-left {
+        flex: 1 1 0;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding-right: 76px;
+        margin-bottom: 0;
+        gap: 8px;
+    }
 
-.navbar-brand-logo:hover::before {
-    opacity: 1;
-    transform: scale(1.05);
-    box-shadow:
-        0 0 28px rgba(255, 255, 255, 0.18),
-        0 12px 34px rgba(0, 0, 0, 0.52);
-}
+    .navbar-custom .nav-right {
+        flex: 1 1 0;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        padding-left: 76px;
+        margin-bottom: 0;
+        gap: 8px;
+    }
 
-.navbar-brand-logo img {
-    height: 34px;
-    width: auto;
-    max-width: min(250px, 54vw);
-    object-fit: contain;
-}
+    .navbar-custom .nav-link {
+        color: var(--text-muted);
+        font-weight: 600;
+        padding: 8px 14px;
+        border-radius: 8px;
+        pointer-events: auto;
+        transition: color 0.2s ease, background-color 0.2s ease;
+    }
 
-/* Alap dark mode: fehér logó. Light mode: fekete logó. */
-.navbar-brand-logo .logo-text-dark {
-    display: block !important;
-}
-
-.navbar-brand-logo .logo-text-light {
-    display: none !important;
-}
-
-body.lightmode .navbar-brand-logo .logo-text-dark {
-    display: none !important;
-}
-
-body.lightmode .navbar-brand-logo .logo-text-light {
-    display: block !important;
-}
-
-/* Hoverkor ellenkező szín */
-body:not(.lightmode) .navbar-brand-logo:hover .logo-text-dark {
-    display: none !important;
-}
-
-body:not(.lightmode) .navbar-brand-logo:hover .logo-text-light {
-    display: block !important;
-}
-
-body.lightmode .navbar-brand-logo:hover .logo-text-dark {
-    display: block !important;
-}
-
-body.lightmode .navbar-brand-logo:hover .logo-text-light {
-    display: none !important;
+    .navbar-custom .nav-link:hover,
+    .navbar-custom .nav-link.active {
+        color: var(--accent);
+    }
 }
 
 /* Finom szerkezeti animációk az egész weboldalon */
@@ -810,14 +800,64 @@ body.lightmode .navbar-brand-logo:hover .logo-text-light {
 }
 
 @media (max-width: 991.98px) {
-    .navbar-custom,
+    .navbar-custom {
+        min-height: 64px;
+    }
+
     .navbar-custom .container-fluid {
-        min-height: 66px;
+        min-height: 64px;
+    }
+
+    .navbar-brand-logo {
+        width: 82px;
+        height: 82px;
+        top: 6px;
     }
 
     .navbar-brand-logo img {
-        height: 30px;
-        max-width: min(230px, 62vw);
+        width: 60px;
+        height: 60px;
+    }
+
+    .navbar-custom .navbar-collapse {
+        margin-top: 30px;
+        width: 100%;
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 18px;
+        padding: 16px 20px;
+        box-shadow: 0 16px 36px var(--shadow-color);
+    }
+
+    .navbar-custom .nav-left,
+    .navbar-custom .nav-right {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        gap: 4px;
+    }
+
+    .navbar-custom .nav-right {
+        margin-top: 4px;
+    }
+
+    .navbar-custom .nav-link {
+        text-align: center;
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-size: 1.05rem;
+    }
+
+    .navbar-custom .nav-link:hover,
+    .navbar-custom .nav-link.active {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    body.lightmode .navbar-custom .nav-link:hover,
+    body.lightmode .navbar-custom .nav-link.active {
+        background-color: rgba(0, 0, 0, 0.05);
     }
 }
 
@@ -828,17 +868,14 @@ body.lightmode .navbar-brand-logo:hover .logo-text-light {
     }
 
     .navbar-brand-logo {
-        padding: 7px 9px;
+        width: 74px;
+        height: 74px;
+        top: 6px;
     }
 
     .navbar-brand-logo img {
-        height: 27px;
-        max-width: 58vw;
-    }
-
-    .navbar-brand-logo::before {
-        inset: -5px -6px;
-        border-radius: 16px;
+        width: 54px;
+        height: 54px;
     }
 }
 /* VALÓDI ÁTTŰNÉSES ANIMÁCIÓK - nem villan, hanem finoman beúszik */

@@ -46,9 +46,13 @@ $newsList = db_get_all_news();
                     <?php foreach ($newsList as $item): ?>
                         <div class="col-lg-4 col-md-6">
                             <article class="card card-custom h-100 news-card">
-                                <?php if (!empty($item['image'])): ?>
+                                <?php 
+                                    $img = trim($item['image'] ?? '');
+                                    $hasRealImage = (!empty($img) && stripos($img, 'news-default.svg') === false);
+                                ?>
+                                <?php if ($hasRealImage): ?>
                                     <div class="card-image-box">
-                                        <img src="<?= e(normalize_image_url($item['image'])) ?>" alt="<?= e($item['title']) ?>" class="card-img-top news-card-image" loading="lazy" decoding="async" />
+                                        <img src="<?= e(normalize_image_url($img)) ?>" alt="<?= e($item['title']) ?>" class="card-img-top news-card-image" loading="lazy" decoding="async" />
                                     </div>
                                 <?php endif; ?>
                                 <div class="card-body d-flex flex-column">

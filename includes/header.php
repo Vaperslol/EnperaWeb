@@ -40,8 +40,8 @@ $themeLineGlow = "rgba({$ar}, {$ag}, {$ab}, 0.55)";
     <title><?= e($pageTitle) ?></title>
 
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin="anonymous" />
-    <link href="<?= $pathPrefix ?>kepek/logo/Panel-White.png" rel="icon" type="image/png" />
-    <link href="<?= $pathPrefix ?>kepek/logo/Panel-White.png" rel="shortcut icon" type="image/png" />
+    <link href="<?= $pathPrefix ?>kepek/logo/enpera-feher.png" rel="icon" type="image/png" />
+    <link href="<?= $pathPrefix ?>kepek/logo/enpera-feher.png" rel="shortcut icon" type="image/png" />
 
     <meta name="description" content="<?= e($pageDescription) ?>" />
     <meta name="theme-color" content="<?= e($themeBgMain) ?>" />
@@ -142,24 +142,20 @@ $themeLineGlow = "rgba({$ar}, {$ag}, {$ab}, 0.55)";
 
     <!-- Felső navigáció -->
     <nav class="navbar navbar-expand-lg navbar-custom">
-        <div class="container-fluid">
-            <a aria-label="N/A főoldal" class="navbar-brand-logo" href="<?= $pathPrefix ?>index.php">
-                <img alt="" aria-hidden="true" class="logo-text-dark" decoding="async" src="<?= $pathPrefix ?>kepek/logo/Text-White-Horizontal.png" />
-                <img alt="" aria-hidden="true" class="logo-text-light" decoding="async" src="<?= $pathPrefix ?>kepek/logo/Text-Black-Horizontal.png" />
+        <div class="container-fluid position-relative">
+            <!-- Középre helyezett körvonalas logó gomb (Főoldal), amely lejjebb lóg a navbarból -->
+            <a aria-label="Főoldal" title="Főoldal" class="navbar-brand-logo <?= $isHome ? 'active' : '' ?>" href="<?= $pathPrefix ?>index.php">
+                <img alt="Empera logó" class="logo-empera-dark" decoding="async" src="<?= $pathPrefix ?>kepek/logo/enpera-feher.png" />
+                <img alt="Empera logó" class="logo-empera-light" decoding="async" src="<?= $pathPrefix ?>kepek/logo/enpera-fekete.png" />
             </a>
 
-            <button aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Menü megnyitása" class="navbar-toggler" data-bs-target="#navbarNavDropdown" data-bs-toggle="collapse" type="button">
+            <!-- Mobilon a jobb felső hamburger ikon -->
+            <button aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Menü megnyitása" class="navbar-toggler ms-auto d-lg-none" data-bs-target="#navbarNavDropdown" data-bs-toggle="collapse" type="button">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link <?= $activeNav === 'home' ? 'active' : '' ?>" href="<?= $pathPrefix ?>index.php">
-                            Főoldal
-                        </a>
-                    </li>
-
+                <ul class="navbar-nav nav-left">
                     <li class="nav-item">
                         <a class="nav-link <?= $activeNav === 'bandatagok' ? 'active' : '' ?>" href="<?= $pathPrefix ?>bandatagok.php">
                             Bandatagok
@@ -177,7 +173,9 @@ $themeLineGlow = "rgba({$ar}, {$ag}, {$ab}, 0.55)";
                             Galéria
                         </a>
                     </li>
+                </ul>
 
+                <ul class="navbar-nav nav-right">
                     <li class="nav-item">
                         <a class="nav-link <?= $activeNav === 'hirek' ? 'active' : '' ?>" href="<?= $pathPrefix ?>hirek.php">
                             Hírek
