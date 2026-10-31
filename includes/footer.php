@@ -5,10 +5,10 @@ $footerSubtitle = $footerSubtitle ?? 'N/A hivatalos weboldala';
     <footer class="footer-custom text-center py-4">
         <div class="container">
             <p class="mb-1">
-                © 2026 N/A
+                &copy; 2026 N/A
             </p>
             <p class="mb-0">
-                <?= e($footerSubtitle) ?>
+                <?= htmlspecialchars($footerSubtitle, ENT_QUOTES, 'UTF-8') ?>
             </p>
         </div>
     </footer>

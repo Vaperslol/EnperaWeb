@@ -263,3 +263,147 @@ body.lightmode .kapcsolat-title {
         padding: 26px;
     }
 }
+
+/* ========================================================
+   RECAPTCHA WIDGET STÍLUSOK (KAPCSOLAT OLDAL)
+   ======================================================== */
+.recaptcha-box {
+    background-color: var(--bg-main);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 14px 18px;
+    max-width: 380px;
+    margin: 0 auto;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.recaptcha-box:hover {
+    border-color: var(--border-hover);
+}
+
+.recaptcha-box.recaptcha-verified {
+    border-color: #10b981;
+    box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.25), 0 8px 22px rgba(0, 0, 0, 0.3);
+}
+
+.recaptcha-box.recaptcha-error {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.3);
+}
+
+.recaptcha-main-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.recaptcha-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+}
+
+.recaptcha-checkbox {
+    width: 28px;
+    height: 28px;
+    border: 2px solid var(--text-muted);
+    border-radius: 6px;
+    background-color: var(--bg-card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.15s ease;
+    flex-shrink: 0;
+}
+
+.recaptcha-left:hover .recaptcha-checkbox {
+    border-color: var(--accent);
+}
+
+.recaptcha-checkbox.loading {
+    border-color: transparent;
+    background-color: transparent;
+}
+
+.recaptcha-checkbox.verified {
+    border-color: #10b981;
+    background-color: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+}
+
+.recaptcha-checkmark {
+    width: 20px;
+    height: 20px;
+    stroke: #10b981;
+}
+
+.recaptcha-spinner {
+    width: 22px;
+    height: 22px;
+    border: 3px solid var(--border-color);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: recaptchaSpin 0.65s linear infinite;
+}
+
+@keyframes recaptchaSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.recaptcha-label {
+    color: var(--text-main);
+    font-weight: 600;
+    font-size: 0.96rem;
+}
+
+.recaptcha-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    line-height: 1.15;
+    flex-shrink: 0;
+}
+
+.recaptcha-logo-icon {
+    width: 26px;
+    height: 26px;
+    stroke: var(--accent);
+    margin-bottom: 2px;
+}
+
+.recaptcha-brand-name {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+}
+
+.recaptcha-brand-terms {
+    font-size: 0.58rem;
+    color: var(--text-muted);
+    opacity: 0.75;
+}
+
+.recaptcha-challenge-panel {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-color);
+}
+
+.recaptcha-answer-input {
+    max-width: 180px;
+}
+
+.recaptcha-feedback {
+    display: block;
+    color: #ef4444;
+    font-weight: 600;
+}

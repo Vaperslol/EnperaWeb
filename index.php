@@ -94,8 +94,7 @@ $latestNews = db_get_latest_news(3);
                     <p class="hero-subtitle lead mt-3">
                         Az N/A egy pesterzsébeti metal banda, amely egy basszusgitáros ötletből,
                         baráti próbákból és tagkeresésből nőtte ki magát. 2026 áprilisában álltunk össze
-                        teljes zenekarként, azóta pedig saját dalokon, koncerteken és egyre erősebb közös
-                        hangzáson dolgozunk.
+                        teljes zenekarként, azóta pedig saját dalokon, koncerteken és egyre erősebb közös hangzáson dolgozunk.
                     </p>
 
                     <div class="mt-4">
@@ -125,9 +124,8 @@ $latestNews = db_get_latest_news(3);
                 </h2>
 
                 <p class="text-muted-custom mx-auto" style="max-width: 850px;">
-                    Nem egyik napról a másikra lett zenekar: először csak gyakorlások,
-                    ötletek és egy kisebb iskolai fellépés volt, aztán 2026 tavaszára
-                    összeállt a teljes N/A.
+                    Nem egyik napról a másikra lett zenekar: először csak gyakorlások, ötletek és egy kisebb
+                    iskolai fellépés volt, aztán 2026 tavaszára összeállt a teljes N/A.
                 </p>
             </div>
 
@@ -144,10 +142,9 @@ $latestNews = db_get_latest_news(3);
                             </h3>
 
                             <p class="card-text text-muted-custom">
-                                A történet Peti basszusgitározásával és Olivérrel közös gyakorlásokkal
-                                indult. Az első komolyabb próbatétel egy osztálykarácsonyi fellépés volt,
-                                ahol két Tankcsapda-számot játszottak el:
-                                az <strong>Egyszerű dal</strong> és az <strong>Örökké tart</strong> című számokat.
+                                A történet Peti basszusgitározásával és Olivérrel közös gyakorlásokkal indult.
+                                Az első komolyabb próbatétel egy osztálykarácsonyi fellépés volt, ahol két Tankcsapda-számot
+                                játszottak el: az Egyszerű dal és az Örökké tart című számokat.
                             </p>
                         </div>
                     </article>
@@ -165,10 +162,9 @@ $latestNews = db_get_latest_news(3);
                             </h3>
 
                             <p class="card-text text-muted-custom">
-                                Januárban elindult a tagkeresés gondolata, februárban pedig már
-                                plakátokkal keresték az új tagokat. Ekkor jött az első nagyobb felkérés is:
-                                a szeptemberi <strong>UMSZKI 100</strong> rendezvény, ami új célt adott a
-                                próbáknak és a zenekar építésének.
+                                Januárban elindult a tagkeresés gondolata, februárban pedig már plakátokkal keresték
+                                az új tagokat. Ekkor jött az első nagyobb felkérés is: a szeptemberi UMSZKI 100 rendezvény,
+                                ami új célt adott a próbáknak és a zenekar építésének.
                             </p>
                         </div>
                     </article>
@@ -186,10 +182,9 @@ $latestNews = db_get_latest_news(3);
                             </h3>
 
                             <p class="card-text text-muted-custom">
-                                Áprilisban Instagramon keresztül jött az üzenet Opovszki Bencétől,
-                                majd a találkozón összeállt a teljes brigád: dob, szólógitár, ének,
-                                ritmusgitár és basszus. A közös próba után megszületett a döntés:
-                                hivatalosan is elindult az <strong>N/A</strong>.
+                                Áprilisban Instagramon keresztül jött az üzenet Opovszki Bencétől, majd a találkozón
+                                összeállt a teljes brigád: dob, szólógitár, ének, ritmusgitár és basszus. A közös próba után
+                                megszületett a döntés: hivatalosan is elindult az N/A.
                             </p>
                         </div>
                     </article>
@@ -205,10 +200,9 @@ $latestNews = db_get_latest_news(3);
                             </h3>
 
                             <p class="card-text text-muted-custom">
-                                A korai próbák és feldolgozások után egyre fontosabb lett, hogy a banda
-                                ne csak mások számait játssza, hanem saját hangzást építsen. Májusban
-                                elindult az első közös szám, a <strong>Gyújtsuk Fel</strong> írása is,
-                                ami már a teljes zenekar közös irányát kezdte megmutatni.
+                                A korai próbák és feldolgozások után egyre fontosabb lett, hogy a banda ne csak
+                                mások számait játssza, hanem saját hangzást építsen. Májusban elindult az első közös szám,
+                                a Gyújtsuk Fel írása is, ami már a teljes zenekar közös irányát kezdte megmutatni.
                             </p>
                         </div>
                     </article>
@@ -222,10 +216,9 @@ $latestNews = db_get_latest_news(3);
                             </h3>
 
                             <p class="card-text text-muted-custom">
-                                Júniusban a zenekar megtalálta a saját főhadiszállását Pesten:
-                                egy olyan helyet, ahol hangosan, szabadabban és rendszeresebben tud próbálni.
-                                Ez lett az alapja annak, hogy az N/A komolyabban építse saját dalait,
-                                koncertprogramját és közös hangzását.
+                                Júniusban a zenekar megtalálta a saját főhadiszállását Pesten: egy olyan helyet,
+                                ahol hangosan, szabadabban és rendszeresebben tud próbálni. Ez lett az alapja annak,
+                                hogy az N/A komolyabban építse saját dalait, koncertprogramját és közös hangzását.
                             </p>
                         </div>
                     </article>
@@ -243,8 +236,7 @@ $latestNews = db_get_latest_news(3);
                 </h2>
 
                 <p class="text-muted-custom">
-                    Nézd meg, kikből áll a zenekar, hol játszunk legközelebb, milyen képek kerültek fel,
-                    és milyen friss hírek történtek a banda körül.
+                    Nézd meg, kikből áll a zenekar, hol játszunk legközelebb, milyen képek kerültek fel, és milyen friss hírek történtek a banda körül.
                 </p>
             </div>
 
@@ -253,12 +245,11 @@ $latestNews = db_get_latest_news(3);
                     <div class="card card-custom page-link-card h-100">
                         <div class="card-body">
                             <h4 class="card-title text-accent">
-                                Bandatagok
+                                Diszkográfia
                             </h4>
 
                             <p class="card-text text-muted-custom">
-                                Ismerd meg, kik állnak a hangszerek és a mikrofon mögött,
-                                és milyen szerepet töltenek be a bandában.
+                                Nyisd meg és böngészd át a kiadott nagylemezeinket, kislemezeinket (EP) és single megjelenéseinket teljes dallistával.
                             </p>
 
                             <a class="btn btn-custom" href="bandatagok.php">
@@ -276,8 +267,7 @@ $latestNews = db_get_latest_news(3);
                             </h4>
 
                             <p class="card-text text-muted-custom">
-                                Itt találod a bejelentett fellépéseket,
-                                helyszíneket, időpontokat és a fontos koncertinfókat.
+                                Itt találod a bejelentett fellépéseket, helyszíneket, időpontokat és a fontos koncertinfókat.
                             </p>
 
                             <a class="btn btn-custom" href="koncertek.php">
@@ -316,9 +306,9 @@ $latestNews = db_get_latest_news(3);
             </h2>
 
             <p class="lead text-muted-custom mt-3 mx-auto" style="max-width: 800px;">
-                A zenénk alapja a súlyos riff, a feszes ritmus és az, hogy minden próbán egy kicsit
-                közelebb kerüljünk a saját hangzásunkhoz. A cél nem csak az, hogy hangosak legyünk,
-                hanem hogy minden dalban benne legyen az a nyers energia, amiből a banda elindult.
+                A zenénk alapja a súlyos riff, a feszes ritmus és az, hogy minden próbán egy kicsit közelebb kerüljünk
+                a saját hangzásunkhoz. A cél nem csak az, hogy hangosak legyünk, hanem hogy minden dalban benne legyen
+                az a nyers energia, amiből a banda elindult.
             </p>
 
             <div class="mt-4">
@@ -339,8 +329,7 @@ $latestNews = db_get_latest_news(3);
                     </h2>
 
                     <p class="text-muted-custom mb-0">
-                        Koncert, közös fellépés, iskolai vagy klubos megkeresés miatt
-                        a kapcsolat oldalon tudsz írni nekünk.
+                        Koncert, közös fellépés, iskolai vagy klubos megkeresés miatt a kapcsolat oldalon tudsz írni nekünk.
                     </p>
                 </div>
 

@@ -157,8 +157,8 @@ $themeLineGlow = "rgba({$ar}, {$ag}, {$ab}, 0.55)";
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul class="navbar-nav nav-left">
                     <li class="nav-item">
-                        <a class="nav-link <?= $activeNav === 'bandatagok' ? 'active' : '' ?>" href="<?= $pathPrefix ?>bandatagok.php">
-                            Bandatagok
+                        <a class="nav-link <?= ($activeNav === 'bandatagok' || $activeNav === 'diszkografia') ? 'active' : '' ?>" href="<?= $pathPrefix ?>bandatagok.php">
+                            Diszkográfia
                         </a>
                     </li>
 
@@ -194,10 +194,15 @@ $themeLineGlow = "rgba({$ar}, {$ag}, {$ab}, 0.55)";
                         </a>
                     </li>
 
-                    <?php if (is_admin_logged_in()): ?>
+                    <?php if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true): ?>
                         <li class="nav-item">
-                            <a class="nav-link <?= $activeNav === 'admin' ? 'active' : '' ?>" href="<?= $pathPrefix ?>admin.php" style="color: var(--accent); font-weight: bold;">
-                                Admin
+                            <a class="nav-link <?= $activeNav === 'admin' ? 'active' : '' ?>" href="<?= $pathPrefix . ADMIN_ENTRY_FILE ?>" style="color: var(--accent); font-weight: bold;">
+                                Vezérlőpult
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<?= $pathPrefix . ADMIN_ENTRY_FILE ?>?action=logout">
+                                Kijelentkezés
                             </a>
                         </li>
                     <?php endif; ?>

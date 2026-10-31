@@ -28,14 +28,15 @@ Kattints duplán a gyökérkönyvtárban lévő **`start_szerver.bat`** fájlra!
 ├── galeria.php                  # Galéria (albumok, képmegjelenítő)
 ├── timeline.php                 # Idővonal oldal (események időrendben)
 ├── kapcsolat.php                # Kapcsolat (natív PHP űrlapfeldolgozás POST-tal)
-├── admin.php                    # Teljes körű PHP Admin vezérlőpult és színválasztó
+├── na-zenekar-kapu.php          # Rejtett, védett PHP Admin vezérlőpult és színválasztó
+├── admin.php                    # Letiltott végpont (azonnali átirányítás az index.php-ra)
 │
 ├── includes/                    # Újrafelhasználható PHP komponensek
-│   ├── config.php               # Alapbeállítások, munkamenet, segédfüggvények
+│   ├── config.php               # Alapbeállítások, admin jelszó hash konfig, munkamenet
 │   ├── header.php               # Közös HTML fejléc, meta tagek és navigáció
 │   ├── footer.php               # Közös lábléc és záró elemek
 │   ├── db.php                   # SQLite PDO kapcsolat és CRUD adatbázis modellek
-│   └── auth.php                 # Admin munkamenet és jogosultságkezelés
+│   └── auth.php                 # Admin munkamenet, password_verify és brute-force védelem
 │
 ├── database/                    # Adatbázis mappa
 │   ├── database.sqlite          # SQLite adatbázis (hírek, koncertek, galéria, üzenetek, timeline, témabeállítások)
@@ -50,11 +51,12 @@ Kattints duplán a gyökérkönyvtárban lévő **`start_szerver.bat`** fájlra!
 
 ---
 
-## 🔐 Admin felület
+## 🔐 Rejtett Admin felület és Biztonság
 
-- **Cím:** `http://localhost:8000/admin.php`
-- **Felhasználónév:** `admin`
-- **Jelszó:** `admin` vagy `admin123` vagy `na-admin-2026`
+- **Titkos belépési cím:** `http://localhost:8000/na-zenekar-kapu.php` *(a sima `/admin.php` letiltva, automatikusan a főoldalra irányít)*
+- **Felhasználónév:** `admin` *(módosítható az `includes/config.php` fájlban)*
+- **Alapértelmezett jelszó:** `admin123` *(az `includes/config.php` fájlban `password_hash()`-sel hashelve, könnyen cserélhető)*
+- **Brute-Force védelem:** 5 sikertelen jelszópróbálkozás után a munkamenet 15 percre letiltja az újabb belépési kísérleteket, sikeres belépéskor pedig `session_regenerate_id(true)` fut le.
 
 Az admin felületen keresztül elérhető funkciók:
 1. **Színek és Megjelenés:** központi színválasztóval a teljes weboldal összes kiemelő színe, ragyogása, gombjai és átmenetei módosíthatók, 1-kattintásos gyors témákkal és élő valós idejű előnézettel.

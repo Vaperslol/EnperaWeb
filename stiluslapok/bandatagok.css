@@ -1,5 +1,5 @@
 /* ========================================================
-   BANDATAGOK & HANGSZEREK (GEAR) STÍLUSLAP
+   DISZKOGRÁFIA (LEMEZ / KISLEMEZ / SINGLE) STÍLUSLAP
    ======================================================== */
 
 html {
@@ -8,7 +8,7 @@ html {
 
 /* FEJLÉC (HERO) */
 .bandatagok-hero {
-    min-height: 52vh;
+    min-height: 48vh;
     background:
         radial-gradient(circle at center, rgba(255, 255, 255, 0.06), transparent 50%),
         linear-gradient(rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.96));
@@ -63,330 +63,393 @@ html {
     max-width: 700px;
 }
 
-/* GYORS UGRÓ GOMBOK A TAGOKHOZ (SOLID, NON-TRANSPARENT, HIGH CONTRAST) */
-.gear-jump-nav {
-    margin-top: 1.8rem;
+/* KATEGÓRIA / OLDALVÁLASZTÓ SÁV (LEMEZ / KISLEMEZ / SINGLE) */
+.disco-page-nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 2rem;
 }
 
-.gear-jump-nav .btn {
-    background-color: var(--bg-card, #141417) !important;
-    color: #ffffff !important;
-    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.2)) !important;
+.disco-page-tab {
+    background-color: var(--bg-card, #141417);
+    color: var(--text-main, #f4f4f6);
+    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.2));
     border-radius: 999px;
-    padding: 0.55rem 1.15rem;
-    font-size: 0.92rem;
-    font-weight: 600;
+    padding: 0.65rem 1.4rem;
+    font-size: 0.95rem;
+    font-weight: 700;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+    gap: 0.55rem;
     transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
 }
 
-.gear-jump-nav .btn:hover {
+.disco-page-tab:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.disco-page-tab.active {
     background-color: var(--accent) !important;
     color: var(--accent-contrast, #000000) !important;
     border-color: var(--accent) !important;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px var(--glow-color, rgba(255, 255, 255, 0.3));
+    box-shadow: 0 8px 24px var(--glow-color, rgba(255, 255, 255, 0.28));
 }
 
-.gear-jump-nav .btn:active,
-.gear-jump-nav .btn:focus {
-    box-shadow: 0 0 0 0.25rem var(--glow-color);
+.disco-tab-count {
+    font-size: 0.78rem;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    font-weight: 800;
 }
 
-/* VILÁGOS MÓD UGRÓ GOMBOK */
-body.lightmode .gear-jump-nav .btn {
-    background-color: #ffffff !important;
-    color: #111111 !important;
-    border-color: #d1d5db !important;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+.disco-page-tab.active .disco-tab-count {
+    background: rgba(0, 0, 0, 0.22);
+    color: inherit;
 }
 
-body.lightmode .gear-jump-nav .btn:hover {
-    background-color: var(--accent) !important;
-    color: var(--accent-contrast, #ffffff) !important;
-    border-color: var(--accent) !important;
+body.lightmode .disco-page-tab {
+    background-color: #ffffff;
+    color: #111111;
+    border-color: #d1d5db;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
 }
 
-/* FELSZERELÉS TÁROLÓ */
-.gear-showcase-container {
-    max-width: 1100px;
-    margin: 0 auto;
+body.lightmode .disco-tab-count {
+    background: rgba(0, 0, 0, 0.08);
 }
 
-/* EGY-EGY BANDATAG TELJES KÁRTYÁJA */
-.gear-card {
+/* KIADVÁNY KÁRTYA (ALBUM / EP / SINGLE GRID) */
+.disco-release-card {
     background-color: var(--bg-card, #141417);
     border: 1px solid var(--border-color);
-    border-radius: 24px;
-    padding: 2.25rem 2.5rem;
-    box-shadow: 0 16px 40px var(--shadow-color);
-    position: relative;
+    border-radius: 22px;
     overflow: hidden;
-    scroll-margin-top: 100px; /* Megfelelő távolság a rögzített navbar alatt kattintáskor */
-    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.gear-card::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 5px;
     height: 100%;
-    background: var(--accent);
-    opacity: 0.8;
-    transition: width 0.25s ease, opacity 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 14px 34px var(--shadow-color);
+    position: relative;
 }
 
-.gear-card:hover {
+.disco-release-card:hover {
+    transform: translateY(-6px);
     border-color: var(--accent);
-    transform: translateY(-4px);
-    box-shadow: 0 22px 50px var(--glow-color, rgba(0, 0, 0, 0.5));
+    box-shadow: 0 22px 48px var(--glow-color, rgba(0, 0, 0, 0.55));
 }
 
-.gear-card:hover::before {
-    width: 8px;
-    opacity: 1;
+.disco-cover-link {
+    display: block;
+    position: relative;
+    aspect-ratio: 1 / 1;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.08), var(--bg-section, #0c0c0e) 75%);
+    overflow: hidden;
+    border-bottom: 1px solid var(--border-color);
+    text-decoration: none;
 }
 
-/* KÁRTYA FEJLÉC (TAG AZONOSÍTÁS) */
-.gear-card-header {
+.disco-cover-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.45s ease;
+}
+
+.disco-release-card:hover .disco-cover-img {
+    transform: scale(1.05);
+}
+
+/* Helyőrző bakelit / CD grafika ha nincs borítókép */
+.disco-cover-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+    background:
+        radial-gradient(circle at center, rgba(255, 255, 255, 0.06) 0%, transparent 60%),
+        repeating-radial-gradient(circle at center, rgba(255, 255, 255, 0.025) 0px, rgba(255, 255, 255, 0.025) 2px, transparent 2px, transparent 9px),
+        var(--bg-section, #0c0c0e);
+    color: var(--accent);
+    transition: transform 0.45s ease;
+}
+
+.disco-release-card:hover .disco-cover-placeholder {
+    transform: scale(1.04);
+}
+
+.disco-vinyl-disc {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
     display: flex;
     align-items: center;
-    margin-bottom: 2rem;
-    padding-bottom: 1.35rem;
-    border-bottom: 1px solid var(--border-color);
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 0 28px var(--glow-color);
+    margin-bottom: 1rem;
 }
 
-.gear-card-identity {
+.disco-vinyl-disc::after {
+    content: "";
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    background: var(--bg-main);
+}
+
+.disco-cover-badges {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    right: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.disco-type-badge {
+    background: rgba(6, 6, 7, 0.88);
+    color: var(--accent);
+    border: 1px solid var(--border-color);
+    padding: 0.32rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    backdrop-filter: blur(6px);
+}
+
+.disco-track-badge {
+    background: rgba(6, 6, 7, 0.85);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    font-weight: 700;
+}
+
+.disco-card-body {
+    padding: 1.6rem;
+    display: flex;
+    flex-direction: column;
     flex: 1;
 }
 
-.gear-badge {
-    background-color: var(--bg-section, #0c0c0e);
-    color: var(--accent);
-    border: 1px solid var(--border-color);
-    font-weight: 700;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-    padding: 0.35rem 0.8rem;
-    border-radius: 999px;
-    margin-bottom: 0.45rem;
-    display: inline-block;
+.disco-release-date {
+    font-size: 0.83rem;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
 }
 
-.gear-member-name {
-    font-size: 2rem;
+.disco-release-title {
+    font-size: 1.45rem;
     font-weight: 800;
     color: var(--text-main);
-    margin: 0;
-    letter-spacing: 0.3px;
+    margin-bottom: 0.65rem;
+    line-height: 1.25;
 }
 
-.gear-role-text {
-    margin: 0.3rem 0 0;
-    font-size: 1rem;
+.disco-release-title a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.disco-release-title a:hover {
+    color: var(--accent);
+}
+
+.disco-release-desc {
     color: var(--text-muted);
+    font-size: 0.96rem;
+    line-height: 1.55;
+    margin-bottom: 1.25rem;
+    flex-grow: 1;
 }
 
-/* KÉT OSZLOPOS FELSZERELÉS GRID */
-.gear-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.75rem;
+/* ========================================================
+   MEGNYITOTT ALBUM / KIADVÁNY RÉSZLETES OLDAL (?kiadvany=ID)
+   ======================================================== */
+
+.disco-detail-card {
+    background-color: var(--bg-card, #141417);
+    border: 1px solid var(--border-color);
+    border-radius: 26px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 55px var(--shadow-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.disco-detail-cover-wrap {
+    aspect-ratio: 1 / 1;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    background: var(--bg-section, #0c0c0e);
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
+}
+
+.disco-detail-cover-wrap img {
     width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-/* FELSZERELÉS CSOPORT DOBOZ (GEAR BLOCK) - STABIL VERTICAL FLEXBOX */
-.gear-block {
+.disco-meta-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+}
+
+.disco-meta-pill {
+    background: var(--bg-section, #0c0c0e);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    border-radius: 999px;
+    padding: 0.35rem 0.9rem;
+    font-size: 0.84rem;
+    font-weight: 600;
+}
+
+.disco-meta-pill.accent {
+    color: var(--accent);
+    border-color: var(--accent);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* DALLISTA (TRACKLIST) */
+.tracklist-container {
+    background-color: var(--bg-card, #141417);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 2rem 2.25rem;
+    box-shadow: 0 16px 40px var(--shadow-color);
+}
+
+.tracklist-item {
     background-color: var(--bg-section, #0c0c0e);
     border: 1px solid var(--border-color);
-    border-radius: 18px;
-    padding: 1.6rem 1.8rem;
-    display: flex;
-    flex-direction: column; /* JAVÍTVA: pontos függőleges flex oszlop, így a cím és a lista nem csúszik össze! */
-    width: 100%;
-    box-sizing: border-box;
-    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.04);
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+    transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
-/* DOBOZ FEJLÉC (IKON + KATEGÓRIA NÉV) */
-.gear-block-title {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    width: 100%;
-    margin-bottom: 1.25rem;
-    padding-bottom: 0.85rem;
-    border-bottom: 1px solid var(--border-color);
+.tracklist-item:last-child {
+    margin-bottom: 0;
 }
 
-.gear-icon {
-    display: inline-flex;
+.tracklist-item:hover {
+    border-color: var(--accent);
+}
+
+.tracklist-row {
+    display: flex;
     align-items: center;
-    justify-content: center;
-    width: 38px;
-    height: 38px;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.tracklist-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-width: 0;
+}
+
+.track-number {
+    width: 36px;
+    height: 36px;
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--border-color);
     color: var(--accent);
+    font-weight: 800;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
 }
 
-.gear-icon .line-icon {
-    width: 1.35rem;
-    height: 1.35rem;
-}
-
-body.lightmode .gear-icon {
-    background: #eef0f4;
-    border-color: #d1d5db;
-}
-
-.gear-jump-nav .line-icon {
-    width: 1.15rem;
-    height: 1.15rem;
-    margin-right: 0.2rem;
-}
-
-.gear-block-title h3 {
-    font-size: 1.2rem;
+.track-title {
+    font-size: 1.08rem;
     font-weight: 700;
-    color: var(--accent);
-    margin: 0;
-    line-height: 1.3;
-}
-
-/* FELSZERELÉS TÉTELEK LISTÁJA */
-.gear-item-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 0.95rem;
-}
-
-.gear-item-list li {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    padding-bottom: 0.85rem;
-    border-bottom: 1px solid var(--border-color);
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.gear-item-list li:last-child {
-    padding-bottom: 0;
-    border-bottom: none;
-}
-
-.gear-item-list li strong {
-    font-size: 0.82rem;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--accent);
-    font-weight: 700;
-    opacity: 0.95;
-    line-height: 1.3;
-}
-
-.gear-item-list li span {
-    font-size: 1rem;
     color: var(--text-main);
-    line-height: 1.5;
-    font-weight: 500;
-    word-break: break-word;
+    margin: 0;
 }
 
-/* VILÁGOS MÓD FINOMHANGOLÁSOK */
-body.lightmode .gear-card {
+.tracklist-right {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.track-duration {
+    font-family: monospace;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.04);
+    padding: 0.2rem 0.6rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.track-lyrics-box {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--border-color);
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.65;
+    white-space: pre-line;
+}
+
+body.lightmode .disco-release-card,
+body.lightmode .disco-detail-card,
+body.lightmode .tracklist-container {
     background-color: #ffffff;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
-body.lightmode .gear-block {
+body.lightmode .tracklist-item,
+body.lightmode .disco-meta-pill {
     background-color: #f8f9fb;
     border-color: #e2e4e9;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
-body.lightmode .gear-badge {
-    background-color: #eef0f4;
-    border-color: #d8dbe2;
-}
-
-body.lightmode .gear-block-title,
-body.lightmode .gear-item-list li {
-    border-color: #e5e7eb;
-}
-
-/* RESZPONZÍV MEGJELENÉS TELEFONON ÉS TABLETEN */
-@media (max-width: 991px) {
-    .gear-grid {
-        grid-template-columns: 1fr;
-        gap: 1.35rem;
+@media (max-width: 767px) {
+    .disco-detail-card {
+        padding: 1.5rem;
     }
 
-    .gear-card {
-        padding: 1.85rem 1.65rem;
-    }
-
-    .gear-card-header {
-        margin-bottom: 1.5rem;
-    }
-
-    .gear-member-name {
-        font-size: 1.65rem;
-    }
-}
-
-@media (max-width: 576px) {
-    .bandatagok-hero {
-        min-height: 40vh;
-        padding: 3rem 1rem 2.5rem;
-    }
-
-    .bandatagok-title {
-        font-size: 2.2rem;
-        letter-spacing: 2px;
-    }
-
-    .gear-card {
-        padding: 1.35rem 1.15rem;
-        border-radius: 18px;
-    }
-
-    .gear-card-header {
-        align-items: flex-start;
-        margin-bottom: 1.25rem;
-        padding-bottom: 1rem;
-    }
-
-    .gear-member-name {
-        font-size: 1.45rem;
-    }
-
-    .gear-block {
-        padding: 1.2rem 1.1rem;
-        border-radius: 14px;
-    }
-
-    .gear-block-title h3 {
-        font-size: 1.08rem;
-    }
-
-    .gear-jump-nav .btn {
-        width: 100%;
-        justify-content: center;
-        padding: 0.55rem 1rem;
+    .tracklist-container {
+        padding: 1.35rem;
     }
 }

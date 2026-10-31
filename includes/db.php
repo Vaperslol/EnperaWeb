@@ -81,10 +81,25 @@ function get_db_connection(): PDO {
             key TEXT PRIMARY KEY,
             value TEXT NOT NULL
         );
+
+        CREATE TABLE IF NOT EXISTS discography (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            category TEXT NOT NULL DEFAULT 'lemez',
+            release_date TEXT NOT NULL,
+            cover_image TEXT DEFAULT '',
+            description TEXT DEFAULT '',
+            tracks TEXT DEFAULT '[]',
+            spotify_url TEXT DEFAULT '',
+            youtube_url TEXT DEFAULT '',
+            apple_url TEXT DEFAULT '',
+            other_url TEXT DEFAULT ''
+        );
     ");
 
     // Automatikus migráció database.json-ből ha a táblák üresek
     migrate_from_json_if_needed($pdo);
+    seed_discography_if_needed($pdo);
 
     return $pdo;
 }
@@ -528,4 +543,220 @@ function db_get_theme_settings(): array {
 function db_save_theme_settings(array $settings): void {
     db_set_setting('site_theme', json_encode($settings, JSON_UNESCAPED_UNICODE));
 }
+
+/* ==========================================================================
+   DISZKOGRÁFIA MODEL (LEMEZ / KISLEMEZ / SINGLE)
+   ========================================================================== */
+
+function seed_discography_if_needed(PDO $pdo): void {
+    $stmt = $pdo->prepare("SELECT value FROM settings WHERE key = 'discography_seeded' LIMIT 1");
+    $stmt->execute();
+    if ($stmt->fetchColumn() !== false) {
+        return;
+    }
+
+    $count = (int)$pdo->query("SELECT COUNT(*) FROM discography")->fetchColumn();
+    if ($count === 0) {
+        insert_default_discography_rows($pdo);
+    }
+
+    $ins = $pdo->prepare("INSERT INTO settings (key, value) VALUES ('discography_seeded', '1') ON CONFLICT(key) DO UPDATE SET value = '1'");
+    $ins->execute();
+}
+
+function insert_default_discography_rows(PDO $pdo): void {
+    $defaults = [
+        [
+            'title' => 'Maw of the Void',
+            'category' => 'lemez',
+            'release_date' => '2026-10-25',
+            'cover_image' => '',
+            'description' => 'Az N/A első teljes nagylemeze: 8 súlyos metal tétel a pesterzsébeti próbaterem nyers energiájából, drop hangolású riffekkel és sötét atmoszférával.',
+            'tracks' => [
+                ['title' => 'Intro – A Mélység Torka', 'duration' => '1:35', 'lyrics' => ' Instrumentális bevezető a sötétből építkező gitárgerinccel.'],
+                ['title' => 'Gyújtsuk Fel', 'duration' => '3:48', 'lyrics' => "Szikra pattan a csend falán,\nNincs már fék az éjszakán.\nGyújtsuk fel a szürke eget,\nHallja meg mindenki a neved!"],
+                ['title' => 'Szürke Beton', 'duration' => '4:05', 'lyrics' => "Panelárnyék, hideg falak,\nDe a mélyben a dobok szólnak."],
+                ['title' => 'Árnyékok Közt', 'duration' => '4:30', 'lyrics' => ''],
+                ['title' => 'Maw of the Void', 'duration' => '5:12', 'lyrics' => 'A lemez címadó dala: lassú, mázsás breakdown és feszes duplázó témák.'],
+                ['title' => 'Töréspont', 'duration' => '3:39', 'lyrics' => ''],
+                ['title' => 'Visszhang', 'duration' => '4:18', 'lyrics' => ''],
+                ['title' => 'Utolsó Akkord', 'duration' => '4:50', 'lyrics' => '']
+            ],
+            'spotify_url' => '',
+            'youtube_url' => '',
+            'apple_url' => '',
+            'other_url' => ''
+        ],
+        [
+            'title' => 'Próbatermi Zaj EP',
+            'category' => 'kislemez',
+            'release_date' => '2026-07-15',
+            'cover_image' => '',
+            'description' => 'Négy dalos bemutatkozó kislemez (EP), amely a zenekar első közös hónapjainak legfeszesebb témáit foglalja össze.',
+            'tracks' => [
+                ['title' => 'Beállás a sötétben', 'duration' => '1:42', 'lyrics' => ''],
+                ['title' => 'Gyújtsuk Fel (EP Verzió)', 'duration' => '3:48', 'lyrics' => ''],
+                ['title' => 'Feszültség', 'duration' => '4:12', 'lyrics' => ''],
+                ['title' => 'Nincs Visszaút', 'duration' => '3:55', 'lyrics' => '']
+            ],
+            'spotify_url' => '',
+            'youtube_url' => '',
+            'apple_url' => '',
+            'other_url' => ''
+        ],
+        [
+            'title' => 'Gyújtsuk Fel',
+            'category' => 'single',
+            'release_date' => '2026-05-20',
+            'cover_image' => '',
+            'description' => 'Az N/A legelső saját dala és single megjelenése, amely 2026 májusában született meg és kijelölte a zenekar saját irányát.',
+            'tracks' => [
+                ['title' => 'Gyújtsuk Fel', 'duration' => '3:48', 'lyrics' => "Szikra pattan a csend falán,\nNincs már fék az éjszakán.\nGyújtsuk fel a szürke eget,\nHallja meg mindenki a neved!"]
+            ],
+            'spotify_url' => '',
+            'youtube_url' => '',
+            'apple_url' => '',
+            'other_url' => ''
+        ]
+    ];
+
+    $stmt = $pdo->prepare("INSERT INTO discography (
+        title, category, release_date, cover_image, description,
+        tracks, spotify_url, youtube_url, apple_url, other_url
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+    foreach ($defaults as $item) {
+        $stmt->execute([
+            $item['title'],
+            $item['category'],
+            $item['release_date'],
+            $item['cover_image'],
+            $item['description'],
+            json_encode($item['tracks'], JSON_UNESCAPED_UNICODE),
+            $item['spotify_url'],
+            $item['youtube_url'],
+            $item['apple_url'],
+            $item['other_url']
+        ]);
+    }
+}
+
+function get_discography_category_label(string $category): string {
+    switch ($category) {
+        case 'lemez':
+            return 'Lemez (Album)';
+        case 'kislemez':
+            return 'Kislemez (EP)';
+        case 'single':
+            return 'Single';
+        default:
+            return 'Lemez';
+    }
+}
+
+function db_get_all_discography(?string $category = null): array {
+    $pdo = get_db_connection();
+    if ($category !== null && in_array($category, ['lemez', 'kislemez', 'single'], true)) {
+        $stmt = $pdo->prepare("SELECT * FROM discography WHERE category = ? ORDER BY release_date DESC, id DESC");
+        $stmt->execute([$category]);
+        $rows = $stmt->fetchAll();
+    } else {
+        $rows = $pdo->query("SELECT * FROM discography ORDER BY release_date DESC, id DESC")->fetchAll();
+    }
+
+    foreach ($rows as &$row) {
+        $row['tracks'] = json_decode($row['tracks'] ?? '[]', true) ?: [];
+    }
+    return $rows;
+}
+
+function db_get_discography_by_id(int $id): ?array {
+    $pdo = get_db_connection();
+    $stmt = $pdo->prepare("SELECT * FROM discography WHERE id = ?");
+    $stmt->execute([$id]);
+    $row = $stmt->fetch();
+    if ($row) {
+        $row['tracks'] = json_decode($row['tracks'] ?? '[]', true) ?: [];
+        return $row;
+    }
+    return null;
+}
+
+function db_create_discography(array $data): int {
+    $pdo = get_db_connection();
+    $category = in_array($data['category'] ?? '', ['lemez', 'kislemez', 'single'], true) ? $data['category'] : 'lemez';
+    $tracksJson = json_encode(array_values($data['tracks'] ?? []), JSON_UNESCAPED_UNICODE);
+
+    $stmt = $pdo->prepare("INSERT INTO discography (
+        title, category, release_date, cover_image, description,
+        tracks, spotify_url, youtube_url, apple_url, other_url
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->execute([
+        $data['title'],
+        $category,
+        $data['release_date'],
+        $data['cover_image'] ?? '',
+        $data['description'] ?? '',
+        $tracksJson,
+        $data['spotify_url'] ?? '',
+        $data['youtube_url'] ?? '',
+        $data['apple_url'] ?? '',
+        $data['other_url'] ?? ''
+    ]);
+    return (int)$pdo->lastInsertId();
+}
+
+function db_update_discography(int $id, array $data): bool {
+    $pdo = get_db_connection();
+    $category = in_array($data['category'] ?? '', ['lemez', 'kislemez', 'single'], true) ? $data['category'] : 'lemez';
+    $tracksJson = json_encode(array_values($data['tracks'] ?? []), JSON_UNESCAPED_UNICODE);
+
+    $stmt = $pdo->prepare("UPDATE discography SET
+        title = ?, category = ?, release_date = ?, cover_image = ?, description = ?,
+        tracks = ?, spotify_url = ?, youtube_url = ?, apple_url = ?, other_url = ?
+        WHERE id = ?");
+    return $stmt->execute([
+        $data['title'],
+        $category,
+        $data['release_date'],
+        $data['cover_image'] ?? '',
+        $data['description'] ?? '',
+        $tracksJson,
+        $data['spotify_url'] ?? '',
+        $data['youtube_url'] ?? '',
+        $data['apple_url'] ?? '',
+        $data['other_url'] ?? '',
+        $id
+    ]);
+}
+
+function db_delete_discography(int $id): bool {
+    $pdo = get_db_connection();
+    $stmt = $pdo->prepare("DELETE FROM discography WHERE id = ?");
+    return $stmt->execute([$id]);
+}
+
+function db_reset_discography_defaults(): void {
+    $pdo = get_db_connection();
+    $pdo->exec("DELETE FROM discography");
+    insert_default_discography_rows($pdo);
+}
+
+function calculate_release_duration(array $tracks): string {
+    $totalSeconds = 0;
+    foreach ($tracks as $track) {
+        $dur = trim($track['duration'] ?? '');
+        if (preg_match('/^(\d+):(\d{1,2})$/', $dur, $m)) {
+            $totalSeconds += ((int)$m[1] * 60) + (int)$m[2];
+        }
+    }
+    if ($totalSeconds <= 0) {
+        return '';
+    }
+    $mins = (int)floor($totalSeconds / 60);
+    $secs = $totalSeconds % 60;
+    return sprintf('%d perc %02d mp', $mins, $secs);
+}
+
+require_once __DIR__ . '/content.php';
 

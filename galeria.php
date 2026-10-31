@@ -117,56 +117,54 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentImages = [];
     let currentIndex = 0;
 
-    function updateImage() {
+    function updateModal() {
         if (!currentImages.length) return;
         modalImg.src = currentImages[currentIndex];
-        modalCounter.textContent = `${currentIndex + 1} / ${currentImages.length}`;
+        modalCounter.textContent = (currentIndex + 1) + " / " + currentImages.length;
     }
 
-    function openModal(title, images) {
-        currentImages = images;
-        currentIndex = 0;
-        modalTitle.textContent = title;
-        updateImage();
-        modal.classList.remove("d-none");
-        document.body.style.overflow = "hidden";
-    }
+    document.querySelectorAll(".open-album-btn").forEach(btn => {
+        btn.addEventListener("click", function () {
+            try {
+                currentImages = JSON.parse(this.getAttribute("data-images") || "[]");
+            } catch (e) {
+                currentImages = [];
+            }
+            if (!currentImages.length) return;
+            currentIndex = 0;
+            modalTitle.textContent = this.getAttribute("data-title") || "";
+            updateModal();
+            modal.classList.remove("d-none");
+            document.body.style.overflow = "hidden";
+        });
+    });
 
     function closeModal() {
         modal.classList.add("d-none");
         document.body.style.overflow = "";
     }
 
-    document.querySelectorAll(".open-album-btn").forEach(btn => {
-        btn.addEventListener("click", function () {
-            const title = this.getAttribute("data-title");
-            const images = JSON.parse(this.getAttribute("data-images") || "[]");
-            openModal(title, images);
+    if (closeBtn) closeBtn.addEventListener("click", closeModal);
+    if (prevBtn) {
+        prevBtn.addEventListener("click", function () {
+            if (!currentImages.length) return;
+            currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+            updateModal();
         });
-    });
-
-    closeBtn.addEventListener("click", closeModal);
-    modal.addEventListener("click", function (e) {
-        if (e.target === modal) closeModal();
-    });
-
-    prevBtn.addEventListener("click", function () {
-        if (!currentImages.length) return;
-        currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
-        updateImage();
-    });
-
-    nextBtn.addEventListener("click", function () {
-        if (!currentImages.length) return;
-        currentIndex = (currentIndex + 1) % currentImages.length;
-        updateImage();
-    });
+    }
+    if (nextBtn) {
+        nextBtn.addEventListener("click", function () {
+            if (!currentImages.length) return;
+            currentIndex = (currentIndex + 1) % currentImages.length;
+            updateModal();
+        });
+    }
 
     document.addEventListener("keydown", function (e) {
         if (modal.classList.contains("d-none")) return;
         if (e.key === "Escape") closeModal();
-        if (e.key === "ArrowLeft") prevBtn.click();
-        if (e.key === "ArrowRight") nextBtn.click();
+        if (e.key === "ArrowLeft" && prevBtn) prevBtn.click();
+        if (e.key === "ArrowRight" && nextBtn) nextBtn.click();
     });
 });
 </script>

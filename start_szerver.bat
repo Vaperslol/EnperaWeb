@@ -12,7 +12,7 @@ if not exist "%PHP_EXE%" (
 )
 
 echo A weboldal cime: http://localhost:8000
-echo Admin felulet:   http://localhost:8000/admin.php
+echo Rejtett kapu:    http://localhost:8000/na-zenekar-kapu.php
 echo.
 echo Leallitashoz nyomj Ctrl+C billentyut ebben az ablakban!
 echo ========================================================

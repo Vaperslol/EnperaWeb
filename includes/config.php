@@ -31,10 +31,114 @@ if (file_exists($envFile)) {
     }
 }
 
-// Admin beállítások
-define('ADMIN_USERNAME', $envVars['ADMIN_USERNAME'] ?? 'admin');
-// Alapértelmezett jelszó: admin123 vagy .env-ben lévő hash
-define('ADMIN_PASSWORD_HASH', $envVars['ADMIN_PASSWORD_HASH'] ?? password_hash('admin123', PASSWORD_DEFAULT));
+// ============================================================================
+// ADMINISZTRÁTORI KONFIGURÁCIÓ (BELÉPÉSI ADATOK ÉS BIZTONSÁG)
+// ============================================================================
+// Egyedi, rejtett adminisztrátori belépési útvonal (a nyilvános /admin.php helyett):
+define('ADMIN_ENTRY_FILE', 'na-zenekar-kapu.php');
+
+// Adminisztrátori felhasználónév:
+define('ADMIN_USERNAME', 'admin');
+
+// Alapértelmezett, biztonságosan hashelt jelszó (alapértelmezett jelszó: admin123).
+// Könnyű csere: írd át az 'admin123' értéket az új jelszóra a password_hash() hívásban,
+// vagy helyettesítsd egy előre generált password_hash(..., PASSWORD_DEFAULT) stringgel.
+define('ADMIN_PASSWORD_HASH', password_hash('admin123', PASSWORD_DEFAULT));
+
+// Brute-force védelem beállításai (5 sikertelen próbálkozás után 15 perc tiltás):
+define('ADMIN_MAX_LOGIN_ATTEMPTS', 5);
+define('ADMIN_LOCKOUT_SECONDS', 15 * 60);
+
+// ============================================================================
+// RECAPTCHA KONFIGURÁCIÓ (ÜZENETKÜLDŐ ŰRLAP VÉDELME)
+// ============================================================================
+// Ha van saját Google reCAPTCHA v2 kulcsod, add meg itt (vagy a .env fájlban).
+// Ha üresen hagyod, a weboldal az alapértelmezett, beépített interaktív
+// "Nem vagyok robot" reCAPTCHA modult használja (külső API-kulcs nélkül is működik).
+define('RECAPTCHA_SITE_KEY', $envVars['RECAPTCHA_SITE_KEY'] ?? '');
+define('RECAPTCHA_SECRET_KEY', $envVars['RECAPTCHA_SECRET_KEY'] ?? '');
+
+/**
+ * Beépített reCAPTCHA kihívás generálása a munkamenetben
+ */
+function generate_contact_captcha(): array {
+    $a = random_int(2, 14);
+    $b = random_int(1, 9);
+    $token = bin2hex(random_bytes(16));
+
+    $_SESSION['contact_captcha'] = [
+        'question' => "{$a} + {$b}",
+        'answer' => (string)($a + $b),
+        'token' => $token,
+        'created_at' => time()
+    ];
+
+    return $_SESSION['contact_captcha'];
+}
+
+/**
+ * Üzenetküldő reCAPTCHA ellenőrzése (támogatja a Google reCAPTCHA v2-t és a beépített reCAPTCHA-t is)
+ */
+function verify_contact_captcha(array $postData): array {
+    // 1. Honeypot (rejtett csapda mező robotok ellen)
+    if (!empty($postData['website_hp'])) {
+        return ['valid' => false, 'error' => 'Robot tevékenység észlelve!'];
+    }
+
+    // 2. Ha Google reCAPTCHA v2 kulcsok be vannak állítva
+    if (RECAPTCHA_SITE_KEY !== '' && RECAPTCHA_SECRET_KEY !== '') {
+        $responseToken = trim($postData['g-recaptcha-response'] ?? '');
+        if ($responseToken === '') {
+            return ['valid' => false, 'error' => 'Kérjük, igazold, hogy nem vagy robot (reCAPTCHA)!'];
+        }
+
+        $verifyUrl = 'https://www.google.com/recaptcha/api/siteverify';
+        $postFields = http_build_query([
+            'secret' => RECAPTCHA_SECRET_KEY,
+            'response' => $responseToken,
+            'remoteip' => $_SERVER['REMOTE_ADDR'] ?? ''
+        ]);
+
+        $context = stream_context_create([
+            'http' => [
+                'method' => 'POST',
+                'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+                'content' => $postFields,
+                'timeout' => 5
+            ]
+        ]);
+
+        $rawResult = @file_get_contents($verifyUrl, false, $context);
+        $result = $rawResult ? json_decode($rawResult, true) : null;
+
+        if (!empty($result['success'])) {
+            return ['valid' => true, 'error' => ''];
+        }
+        return ['valid' => false, 'error' => 'Sikertelen reCAPTCHA ellenőrzés! Kérjük, próbáld újra.'];
+    }
+
+    // 3. Beépített interaktív "Nem vagyok robot" reCAPTCHA ellenőrzése
+    $sessionCaptcha = $_SESSION['contact_captcha'] ?? null;
+    unset($_SESSION['contact_captcha']); // Egyszer használatos token
+
+    $isChecked = ($postData['recaptcha_checked'] ?? '') === '1';
+    $submittedToken = trim($postData['captcha_token'] ?? '');
+    $submittedAnswer = trim($postData['captcha_answer'] ?? '');
+
+    if (!$isChecked) {
+        return ['valid' => false, 'error' => 'Kérjük, pipáld be a „Nem vagyok robot” reCAPTCHA mezőt!'];
+    }
+
+    if (!$sessionCaptcha || empty($sessionCaptcha['token']) || !hash_equals($sessionCaptcha['token'], $submittedToken)) {
+        return ['valid' => false, 'error' => 'A biztonsági ellenőrzés lejárt. Kérjük, próbáld újra!'];
+    }
+
+    if ($submittedAnswer === '' || $submittedAnswer !== $sessionCaptcha['answer']) {
+        return ['valid' => false, 'error' => 'Hibás válasz a biztonsági reCAPTCHA ellenőrzésre! Kérjük, próbáld újra.'];
+    }
+
+    return ['valid' => true, 'error' => ''];
+}
 
 /**
  * Biztonságos HTML kiírás

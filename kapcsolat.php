@@ -15,8 +15,20 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
     $contact = trim($_POST['messageContact'] ?? '');
     $location = trim($_POST['messageLocation'] ?? '');
 
+    // Űrlapadatok ideiglenes megőrzése hiba esetére
+    $_SESSION['contact_old'] = [
+        'title' => $title,
+        'text' => $text,
+        'contact' => $contact,
+        'location' => $location
+    ];
+
+    $captchaCheck = verify_contact_captcha($_POST);
+
     if (empty($title) || empty($text) || empty($contact)) {
         set_flash('error', 'A cím, az üzenet és az elérhetőség megadása kötelező!');
+    } elseif (!$captchaCheck['valid']) {
+        set_flash('error', $captchaCheck['error']);
     } else {
         try {
             db_create_message([
@@ -25,6 +37,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                 'contact' => $contact,
                 'location' => $location
             ]);
+            unset($_SESSION['contact_old']);
             set_flash('success', 'Köszönjük! Az üzenetedet sikeresen elküldtük a bandának.');
         } catch (Exception $e) {
             set_flash('error', 'Hiba történt az üzenet küldése során. Kérjük próbáld újra később!');
@@ -38,6 +51,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 }
 
 $flash = get_flash();
+$oldInput = $_SESSION['contact_old'] ?? [];
+unset($_SESSION['contact_old']);
+$captchaData = generate_contact_captcha();
+$useGoogleRecaptcha = (RECAPTCHA_SITE_KEY !== '' && RECAPTCHA_SECRET_KEY !== '');
 
 require_once __DIR__ . '/includes/header.php';
 ?>
@@ -190,33 +207,98 @@ require_once __DIR__ . '/includes/header.php';
                             </div>
                         <?php endif; ?>
 
-                        <form method="POST" action="kapcsolat.php">
+                        <form method="POST" action="kapcsolat.php" id="contactMessageForm">
+                            <!-- Honeypot mező spam robotok ellen (emberek számára rejtett) -->
+                            <div style="position: absolute; left: -9999px; opacity: 0; pointer-events: none;" aria-hidden="true">
+                                <label for="website_hp">Weboldal (hagyd üresen)</label>
+                                <input type="text" id="website_hp" name="website_hp" tabindex="-1" autocomplete="off" value="" />
+                            </div>
+
                             <div class="mb-3">
                                 <label class="form-label" for="messageTitle">
                                     Üzenet címe *
                                 </label>
-                                <input class="form-control" id="messageTitle" name="messageTitle" placeholder="Pl. Koncertmegkeresés" required type="text" />
+                                <input class="form-control" id="messageTitle" name="messageTitle" placeholder="Pl. Koncertmegkeresés" required type="text" value="<?= e($oldInput['title'] ?? '') ?>" />
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label" for="messageText">
                                     Üzenet *
                                 </label>
-                                <textarea class="form-control" id="messageText" name="messageText" placeholder="Írd le, miről lenne szó..." required rows="6"></textarea>
+                                <textarea class="form-control" id="messageText" name="messageText" placeholder="Írd le, miről lenne szó..." required rows="6"><?= e($oldInput['text'] ?? '') ?></textarea>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label" for="messageContact">
                                     Elérhetőség *
                                 </label>
-                                <input class="form-control" id="messageContact" name="messageContact" placeholder="Email, Instagram, telefon vagy bármi, ahol elérünk" required type="text" />
+                                <input class="form-control" id="messageContact" name="messageContact" placeholder="Email, Instagram, telefon vagy bármi, ahol elérünk" required type="text" value="<?= e($oldInput['contact'] ?? '') ?>" />
                             </div>
 
-                            <div class="mb-3">
+                            <div class="mb-4">
                                 <label class="form-label" for="messageLocation">
                                     Helyszín / város (opcionális)
                                 </label>
-                                <input class="form-control" id="messageLocation" name="messageLocation" placeholder="Pl. Budapest, Pesterzsébet" type="text" />
+                                <input class="form-control" id="messageLocation" name="messageLocation" placeholder="Pl. Budapest, Pesterzsébet" type="text" value="<?= e($oldInput['location'] ?? '') ?>" />
+                            </div>
+
+                            <!-- RECAPTCHA ELLENŐRZÉS -->
+                            <div class="mb-4">
+                                <?php if ($useGoogleRecaptcha): ?>
+                                    <div class="d-flex justify-content-center">
+                                        <div class="g-recaptcha" data-sitekey="<?= e(RECAPTCHA_SITE_KEY) ?>" data-theme="dark"></div>
+                                    </div>
+                                    <script src="https://www.google.com/recaptcha/api.js?hl=hu" async defer></script>
+                                <?php else: ?>
+                                    <input type="hidden" name="captcha_token" value="<?= e($captchaData['token']) ?>" />
+                                    <input type="hidden" name="recaptcha_checked" id="recaptchaCheckedInput" value="0" />
+
+                                    <div class="recaptcha-box" id="customRecaptchaBox">
+                                        <div class="recaptcha-main-row">
+                                            <div class="recaptcha-left" id="recaptchaTriggerArea" role="checkbox" aria-checked="false" tabindex="0">
+                                                <div class="recaptcha-checkbox" id="recaptchaCheckboxVisual">
+                                                    <div class="recaptcha-spinner d-none" id="recaptchaSpinner"></div>
+                                                    <svg class="recaptcha-checkmark d-none" id="recaptchaCheckmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                                    </svg>
+                                                </div>
+                                                <span class="recaptcha-label" id="recaptchaStatusLabel">Nem vagyok robot</span>
+                                            </div>
+
+                                            <div class="recaptcha-brand">
+                                                <svg class="recaptcha-logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                                    <path d="m9 12 2 2 4-4"/>
+                                                </svg>
+                                                <span class="recaptcha-brand-name">reCAPTCHA</span>
+                                                <small class="recaptcha-brand-terms">Védelem • Feltételek</small>
+                                            </div>
+                                        </div>
+
+                                        <!-- Kihívás panel (kattintásra nyílik meg) -->
+                                        <div class="recaptcha-challenge-panel d-none" id="recaptchaChallengePanel">
+                                            <label class="form-label small mb-2 d-block text-accent" for="captchaAnswerInput">
+                                                Biztonsági ellenőrzés: mennyi <strong><?= e($captchaData['question']) ?></strong>?
+                                            </label>
+                                            <div class="d-flex gap-2 align-items-center">
+                                                <input
+                                                    type="number"
+                                                    inputmode="numeric"
+                                                    class="form-control form-control-sm recaptcha-answer-input"
+                                                    id="captchaAnswerInput"
+                                                    name="captcha_answer"
+                                                    placeholder="Írd be az eredményt..."
+                                                    required
+                                                    autocomplete="off"
+                                                />
+                                                <button type="button" class="btn btn-sm btn-custom px-3" id="verifyCaptchaBtn">
+                                                    Igazolás
+                                                </button>
+                                            </div>
+                                            <small class="recaptcha-feedback d-none mt-2" id="recaptchaClientError"></small>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
                             </div>
 
                             <button class="btn btn-custom w-100" type="submit">
@@ -229,5 +311,114 @@ require_once __DIR__ . '/includes/header.php';
         </div>
     </section>
 </main>
+
+<?php if (!$useGoogleRecaptcha): ?>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const expectedSum = <?= (int)$captchaData['answer'] ?>;
+    const triggerArea = document.getElementById("recaptchaTriggerArea");
+    const checkboxVisual = document.getElementById("recaptchaCheckboxVisual");
+    const spinner = document.getElementById("recaptchaSpinner");
+    const checkmark = document.getElementById("recaptchaCheckmark");
+    const statusLabel = document.getElementById("recaptchaStatusLabel");
+    const challengePanel = document.getElementById("recaptchaChallengePanel");
+    const answerInput = document.getElementById("captchaAnswerInput");
+    const verifyBtn = document.getElementById("verifyCaptchaBtn");
+    const checkedInput = document.getElementById("recaptchaCheckedInput");
+    const recaptchaBox = document.getElementById("customRecaptchaBox");
+    const clientError = document.getElementById("recaptchaClientError");
+    const form = document.getElementById("contactMessageForm");
+
+    let isVerified = false;
+    let isOpening = false;
+
+    function openChallenge() {
+        if (isVerified || isOpening) return;
+        isOpening = true;
+        checkboxVisual.classList.add("loading");
+        spinner.classList.remove("d-none");
+
+        setTimeout(function () {
+            spinner.classList.add("d-none");
+            checkboxVisual.classList.remove("loading");
+            challengePanel.classList.remove("d-none");
+            if (answerInput) {
+                answerInput.focus();
+            }
+            isOpening = false;
+        }, 400);
+    }
+
+    function checkChallengeAnswer(showErrorOnFail) {
+        if (!answerInput) return false;
+        const val = parseInt(answerInput.value.trim(), 10);
+        if (val === expectedSum) {
+            isVerified = true;
+            checkedInput.value = "1";
+            triggerArea.setAttribute("aria-checked", "true");
+            checkboxVisual.classList.add("verified");
+            checkmark.classList.remove("d-none");
+            statusLabel.textContent = "Nem vagyok robot (Igazolva)";
+            challengePanel.classList.add("d-none");
+            recaptchaBox.classList.remove("recaptcha-error");
+            recaptchaBox.classList.add("recaptcha-verified");
+            if (clientError) clientError.classList.add("d-none");
+            return true;
+        } else if (showErrorOnFail) {
+            if (clientError) {
+                clientError.textContent = "Hibás eredmény, kérjük számold ki újra!";
+                clientError.classList.remove("d-none");
+            }
+            recaptchaBox.classList.add("recaptcha-error");
+            answerInput.focus();
+        }
+        return false;
+    }
+
+    if (triggerArea) {
+        triggerArea.addEventListener("click", openChallenge);
+        triggerArea.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                openChallenge();
+            }
+        });
+    }
+
+    if (verifyBtn) {
+        verifyBtn.addEventListener("click", function () {
+            checkChallengeAnswer(true);
+        });
+    }
+
+    if (answerInput) {
+        answerInput.addEventListener("input", function () {
+            if (clientError) clientError.classList.add("d-none");
+            checkChallengeAnswer(false);
+        });
+        answerInput.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                checkChallengeAnswer(true);
+            }
+        });
+    }
+
+    if (form) {
+        form.addEventListener("submit", function (e) {
+            if (!isVerified && !checkChallengeAnswer(true)) {
+                e.preventDefault();
+                recaptchaBox.classList.add("recaptcha-error");
+                if (challengePanel.classList.contains("d-none")) {
+                    openChallenge();
+                } else if (answerInput) {
+                    answerInput.focus();
+                }
+            }
+        });
+    }
+});
+</script>
+<?php endif; ?>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

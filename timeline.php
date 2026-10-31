@@ -100,7 +100,7 @@ $timelineEvents = db_get_all_timeline();
                         Az idővonal a banda fontosabb pillanatait gyűjti össze: alakulást, próbákat, koncerteket, képfeltöltéseket és egyéb mérföldköveket.
                     </p>
                     <p class="text-muted-custom">
-                        Az admin felületen bármikor új eseményeket lehet hozzáadni, így a timeline folyamatosan bővíthető marad.
+                        Az idővonal folyamatosan bővül az újabb zenekari eseményekkel és mérföldkövekkel.
                     </p>
                 </div>
                 <div class="col-lg-6">
@@ -126,15 +126,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const leftBtn = document.getElementById("timelineLeft");
     const rightBtn = document.getElementById("timelineRight");
 
-    if (leftBtn && wrapper) {
-        leftBtn.addEventListener("click", function () {
-            wrapper.scrollBy({ left: -350, behavior: "smooth" });
+    if (wrapper && leftBtn && rightBtn) {
+        leftBtn.addEventListener("click", () => {
+            wrapper.scrollBy({ left: -340, behavior: "smooth" });
         });
-    }
-
-    if (rightBtn && wrapper) {
-        rightBtn.addEventListener("click", function () {
-            wrapper.scrollBy({ left: 350, behavior: "smooth" });
+        rightBtn.addEventListener("click", () => {
+            wrapper.scrollBy({ left: 340, behavior: "smooth" });
         });
     }
 });
