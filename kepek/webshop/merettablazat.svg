@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
+  <rect width="800" height="600" fill="#0c0c0e"/>
+  <!-- Póló méretezési rajz (szigorúan fekete-fehér) -->
+  <path d="M315,75 L360,65 C375,82 425,82 440,65 L485,75 L535,140 L495,170 L465,135 L465,285 L335,285 L335,135 L305,170 L265,140 Z" fill="none" stroke="#ffffff" stroke-width="2.5"/>
+  <!-- A (Szélesség) és B (Hosszúság) jelölővonalak -->
+  <line x1="335" y1="175" x2="465" y2="175" stroke="#9c9ca4" stroke-width="2" stroke-dasharray="5,5"/>
+  <line x1="400" y1="75" x2="400" y2="285" stroke="#9c9ca4" stroke-width="2" stroke-dasharray="5,5"/>
+  <circle cx="360" cy="175" r="13" fill="#141417" stroke="#ffffff" stroke-width="1.5"/>
+  <text x="360" y="180" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-weight="900" font-size="13">A</text>
+  <circle cx="400" cy="235" r="13" fill="#141417" stroke="#ffffff" stroke-width="1.5"/>
+  <text x="400" y="240" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-weight="900" font-size="13">B</text>
+
+  <!-- Mérettáblázat -->
+  <g transform="translate(90, 320)" font-family="Arial, sans-serif" fill="#ffffff">
+    <rect x="0" y="0" width="620" height="230" fill="#141417" stroke="#27272c" stroke-width="2" rx="8"/>
+    <line x1="0" y1="44" x2="620" y2="44" stroke="#ffffff" stroke-width="2"/>
+    <line x1="0" y1="82" x2="620" y2="82" stroke="#27272c" stroke-width="1"/>
+    <line x1="0" y1="118" x2="620" y2="118" stroke="#27272c" stroke-width="1"/>
+    <line x1="0" y1="154" x2="620" y2="154" stroke="#27272c" stroke-width="1"/>
+    <line x1="0" y1="190" x2="620" y2="190" stroke="#27272c" stroke-width="1"/>
+    <line x1="180" y1="0" x2="180" y2="230" stroke="#27272c" stroke-width="1"/>
+    <line x1="400" y1="0" x2="400" y2="230" stroke="#27272c" stroke-width="1"/>
+
+    <text x="90" y="28" text-anchor="middle" font-weight="900" font-size="15">MÉRET</text>
+    <text x="290" y="28" text-anchor="middle" font-weight="900" font-size="15">A – SZÉLESSÉG (CM)</text>
+    <text x="510" y="28" text-anchor="middle" font-weight="900" font-size="15">B – HOSSZÚSÁG (CM)</text>
+
+    <text x="90" y="68" text-anchor="middle" font-weight="700" font-size="14">S</text>
+    <text x="290" y="68" text-anchor="middle" fill="#9c9ca4" font-size="14">50 cm</text>
+    <text x="510" y="68" text-anchor="middle" fill="#9c9ca4" font-size="14">70 cm</text>
+
+    <text x="90" y="105" text-anchor="middle" font-weight="700" font-size="14">M</text>
+    <text x="290" y="105" text-anchor="middle" fill="#9c9ca4" font-size="14">53 cm</text>
+    <text x="510" y="105" text-anchor="middle" fill="#9c9ca4" font-size="14">72 cm</text>
+
+    <text x="90" y="141" text-anchor="middle" font-weight="700" font-size="14">L</text>
+    <text x="290" y="141" text-anchor="middle" fill="#9c9ca4" font-size="14">56 cm</text>
+    <text x="510" y="141" text-anchor="middle" fill="#9c9ca4" font-size="14">74 cm</text>
+
+    <text x="90" y="177" text-anchor="middle" font-weight="700" font-size="14">XL</text>
+    <text x="290" y="177" text-anchor="middle" fill="#9c9ca4" font-size="14">59 cm</text>
+    <text x="510" y="177" text-anchor="middle" fill="#9c9ca4" font-size="14">76 cm</text>
+
+    <text x="90" y="214" text-anchor="middle" font-weight="700" font-size="14">2XL</text>
+    <text x="290" y="214" text-anchor="middle" fill="#9c9ca4" font-size="14">62 cm</text>
+    <text x="510" y="214" text-anchor="middle" fill="#9c9ca4" font-size="14">78 cm</text>
+  </g>
+</svg>

@@ -53,8 +53,10 @@ $themeLineGlow = "rgba({$ar}, {$ag}, {$ab}, 0.55)";
     <link href="<?= $pathPrefix ?>stiluslapok/alap.css" rel="stylesheet" />
 
     <!-- Oldalspecifikus stíluslapok -->
-    <?php foreach ($extraCss as $css): ?>
-        <link href="<?= $pathPrefix ?>stiluslapok/<?= e($css) ?>" rel="stylesheet" />
+    <?php foreach ($extraCss as $css):
+        $cssClean = preg_replace('#^stiluslapok/#', '', $css);
+    ?>
+        <link href="<?= $pathPrefix ?>stiluslapok/<?= e($cssClean) ?>" rel="stylesheet" />
     <?php endforeach; ?>
 
     <!-- Dinamikus színtéma az adatbázisból -->
@@ -88,7 +90,8 @@ $themeLineGlow = "rgba({$ar}, {$ag}, {$ab}, 0.55)";
         .kapcsolat-hero,
         .koncertek-hero,
         .rolunk-hero,
-        .timeline-hero {
+        .timeline-hero,
+        .webshop-hero {
             background-image: <?= $themeHeroGlow ?>, linear-gradient(rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.95)) !important;
         }
 
@@ -134,6 +137,21 @@ $themeLineGlow = "rgba({$ar}, {$ag}, {$ab}, 0.55)";
         } catch (e) {}
     </script>
 
+    <?php $headerCartCount = function_exists('shop_get_cart_count') ? shop_get_cart_count() : 0; ?>
+
+    <!-- Jobb alsó Kosár ikon gomb (a dark/light mode választó mellett) -->
+    <a id="kosar-gomb"
+       href="<?= $pathPrefix ?>kosar.php"
+       aria-label="Kosár megnyitása"
+       title="Kosár & Megrendelés (<?= (int)$headerCartCount ?> db)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="9" cy="21" r="1.5"></circle>
+            <circle cx="19" cy="21" r="1.5"></circle>
+            <path d="M2.5 3h2.8l2.4 11.5a2 2 0 0 0 2 1.5h9.2a2 2 0 0 0 1.9-1.4L23 6H6.2"></path>
+        </svg>
+        <span class="kosar-floating-badge"><?= (int)$headerCartCount ?></span>
+    </a>
+
     <!-- Fény/Sötét mód kapcsoló gomb -->
     <button id="kapcsolo" aria-label="Világos és sötét mód váltása" type="button">
         <img alt="Sötét mód" decoding="async" height="28" src="<?= $pathPrefix ?>kepek/ikonok/holdacska.svg" width="28" />
@@ -147,6 +165,20 @@ $themeLineGlow = "rgba({$ar}, {$ag}, {$ab}, 0.55)";
             <a aria-label="Főoldal" title="Főoldal" class="navbar-brand-logo <?= $isHome ? 'active' : '' ?>" href="<?= $pathPrefix ?>index.php">
                 <img alt="Empera logó" class="logo-empera-dark" decoding="async" src="<?= $pathPrefix ?>kepek/logo/enpera-feher.png" />
                 <img alt="Empera logó" class="logo-empera-light" decoding="async" src="<?= $pathPrefix ?>kepek/logo/enpera-fekete.png" />
+            </a>
+
+            <!-- Külön kis fehér gombocska jobb felül a Webshophoz -->
+            <a id="webshop-gomb"
+               href="<?= $pathPrefix ?>webshop.php"
+               class="webshop-top-btn <?= $activeNav === 'webshop' ? 'active' : '' ?>"
+               aria-label="Webshop megnyitása"
+               title="Webshop & Merch">
+                <svg class="line-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+                <span class="webshop-top-btn-label">Webshop</span>
             </a>
 
             <!-- Mobilon a jobb felső hamburger ikon -->

@@ -33,17 +33,17 @@ function prepareAnimations() {
     const elements = collectAnimatedElements();
 
     elements.forEach(function (element, index) {
-        element.classList.add("motv-reveal");
+        element.classList.add("enpera-reveal");
 
         const groupDelay = Math.min(index % 6, 5) * 70;
-        element.style.setProperty("--motv-delay", `${groupDelay}ms`);
+        element.style.setProperty("--enpera-delay", `${groupDelay}ms`);
     });
 
-    document.body.classList.add("motv-animations-ready");
+    document.body.classList.add("enpera-animations-ready");
 
     if (!("IntersectionObserver" in window)) {
         elements.forEach(function (element) {
-            element.classList.add("motv-visible");
+            element.classList.add("enpera-visible");
         });
         return;
     }
@@ -51,7 +51,7 @@ function prepareAnimations() {
     const observer = new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
             if (entry.isIntersecting) {
-                entry.target.classList.add("motv-visible");
+                entry.target.classList.add("enpera-visible");
                 observer.unobserve(entry.target);
             }
         });

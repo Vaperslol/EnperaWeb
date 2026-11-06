@@ -321,6 +321,163 @@ body.lightmode #kapcsolo img:last-child {
 }
 
 /* ========================================================
+   JOBB ALSÓ KOSÁR IKON GOMB (#kosar-gomb, a #kapcsolo mellett)
+   ======================================================== */
+#kosar-gomb {
+    position: fixed;
+    right: 92px;
+    bottom: 25px;
+    z-index: 9999;
+
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+
+    background-color: #ffffff;
+    color: #060607 !important;
+    border: 2px solid rgba(255, 255, 255, 0.65);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 16px rgba(255, 255, 255, 0.25);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+
+    cursor: pointer;
+    transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+#kosar-gomb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6), 0 0 22px rgba(255, 255, 255, 0.45);
+}
+
+#kosar-gomb svg {
+    width: 24px;
+    height: 24px;
+    stroke: #060607;
+}
+
+.kosar-floating-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background-color: #060607;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    font-size: 0.72rem;
+    font-weight: 900;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.lightmode #kosar-gomb {
+    background-color: #141417;
+    color: #ffffff !important;
+    border: 2px solid rgba(0, 0, 0, 0.25);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2), 0 0 14px rgba(0, 0, 0, 0.1);
+}
+
+body.lightmode #kosar-gomb svg {
+    stroke: #ffffff;
+}
+
+body.lightmode #kosar-gomb .kosar-floating-badge {
+    background-color: #ffffff;
+    color: #09090b;
+    border-color: #141417;
+}
+
+/* ========================================================
+   JOBB FELSŐ KIS FEHÉR WEBSHOP GOMBOCSKA (#webshop-gomb)
+   ======================================================== */
+#webshop-gomb.webshop-top-btn {
+    position: absolute;
+    right: 22px;
+    top: 17px;
+    z-index: 5030;
+    height: 38px;
+    padding: 0 15px;
+    border-radius: 999px;
+    background-color: #ffffff;
+    color: #060607 !important;
+    border: 2px solid #ffffff;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45), 0 0 14px rgba(255, 255, 255, 0.28);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    text-decoration: none;
+    pointer-events: auto !important;
+    transition: transform 0.22s ease, box-shadow 0.22s ease, background-color 0.22s ease;
+}
+
+#webshop-gomb.webshop-top-btn .line-icon {
+    width: 17px;
+    height: 17px;
+    stroke: #060607;
+}
+
+#webshop-gomb.webshop-top-btn:hover,
+#webshop-gomb.webshop-top-btn.active {
+    transform: translateY(-2px) scale(1.05);
+    background-color: #f4f4f6;
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 255, 255, 0.5);
+}
+
+.webshop-cart-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background-color: #060607;
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 900;
+    line-height: 1;
+}
+
+body.lightmode #webshop-gomb.webshop-top-btn {
+    background-color: #ffffff;
+    color: #09090b !important;
+    border: 2px solid #09090b;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
+}
+
+@media (max-width: 991.98px) {
+    #webshop-gomb.webshop-top-btn {
+        right: 74px;
+        top: 13px;
+        height: 36px;
+        padding: 0 12px;
+        font-size: 0.78rem;
+    }
+}
+
+@media (max-width: 480px) {
+    #webshop-gomb.webshop-top-btn {
+        right: 66px;
+        padding: 0 10px;
+    }
+    #webshop-gomb.webshop-top-btn .webshop-top-btn-label {
+        display: none;
+    }
+}
+
+/* ========================================================
    LOGÓK ÉS KÖZÉPRE IGAZÍTOTT KÖR ALAKÚ FŐOLDAL GOMB
    ======================================================== */
 
@@ -633,6 +790,16 @@ img { max-width: 100%; height: auto; }
         width: 24px;
         height: 24px;
     }
+    #kosar-gomb {
+        right: 72px;
+        bottom: 14px;
+        width: 48px;
+        height: 48px;
+    }
+    #kosar-gomb svg {
+        width: 21px;
+        height: 21px;
+    }
     .news-modal {
         padding: 56px 12px 16px;
     }
@@ -737,7 +904,7 @@ body {
 .concert-card,
 .gallery-card,
 .admin-card {
-    animation: motvFadeUp 0.7s ease both;
+    animation: enperaFadeUp 0.7s ease both;
 }
 
 .main-bg > section:nth-of-type(1) { animation-delay: 0.02s; }
@@ -778,7 +945,7 @@ body {
     box-shadow: 0 10px 24px var(--glow-color);
 }
 
-@keyframes motvFadeUp {
+@keyframes enperaFadeUp {
     from {
         opacity: 0;
         transform: translateY(18px);
@@ -879,7 +1046,7 @@ body {
     }
 }
 /* VALÓDI ÁTTŰNÉSES ANIMÁCIÓK - nem villan, hanem finoman beúszik */
-body.motv-animations-ready .motv-reveal {
+body.enpera-animations-ready .enpera-reveal {
     opacity: 0;
     transform: translateY(34px) scale(0.985);
     filter: none;
@@ -889,21 +1056,21 @@ body.motv-animations-ready .motv-reveal {
         box-shadow 260ms ease,
         border-color 260ms ease,
         background-color 260ms ease;
-    transition-delay: var(--motv-delay, 0ms);
+    transition-delay: var(--enpera-delay, 0ms);
     will-change: opacity, transform;
 }
 
-body.motv-animations-ready .motv-reveal.motv-visible {
+body.enpera-animations-ready .enpera-reveal.enpera-visible {
     opacity: 1;
     transform: translateY(0) scale(1);
     filter: none;
 }
 
 /* Kártyák hoverje marad gyors, de nem írja felül a beúszást */
-body.motv-animations-ready .motv-reveal.motv-visible.card-custom:hover,
-body.motv-animations-ready .motv-reveal.motv-visible.member-card:hover,
-body.motv-animations-ready .motv-reveal.motv-visible.news-card:hover,
-body.motv-animations-ready .motv-reveal.motv-visible.timeline-item:hover {
+body.enpera-animations-ready .enpera-reveal.enpera-visible.card-custom:hover,
+body.enpera-animations-ready .enpera-reveal.enpera-visible.member-card:hover,
+body.enpera-animations-ready .enpera-reveal.enpera-visible.news-card:hover,
+body.enpera-animations-ready .enpera-reveal.enpera-visible.timeline-item:hover {
     transition:
         transform 260ms ease,
         box-shadow 260ms ease,
@@ -912,26 +1079,26 @@ body.motv-animations-ready .motv-reveal.motv-visible.timeline-item:hover {
 }
 
 /* A régi page-load animációkat kikapcsoljuk, hogy ne villanjanak be */
-body.motv-animations-ready .main-bg > section,
-body.motv-animations-ready .footer-custom,
-body.motv-animations-ready .card-custom,
-body.motv-animations-ready .member-card,
-body.motv-animations-ready .profile-card,
-body.motv-animations-ready .contact-card,
-body.motv-animations-ready .news-card,
-body.motv-animations-ready .timeline-item,
-body.motv-animations-ready .concert-card,
-body.motv-animations-ready .gallery-card,
-body.motv-animations-ready .admin-card {
+body.enpera-animations-ready .main-bg > section,
+body.enpera-animations-ready .footer-custom,
+body.enpera-animations-ready .card-custom,
+body.enpera-animations-ready .member-card,
+body.enpera-animations-ready .profile-card,
+body.enpera-animations-ready .contact-card,
+body.enpera-animations-ready .news-card,
+body.enpera-animations-ready .timeline-item,
+body.enpera-animations-ready .concert-card,
+body.enpera-animations-ready .gallery-card,
+body.enpera-animations-ready .admin-card {
     animation: none !important;
 }
 
 /* A navbar külön, betöltéskor finoman csússzon le */
 .navbar-custom {
-    animation: motvNavbarDrop 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: enperaNavbarDrop 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-@keyframes motvNavbarDrop {
+@keyframes enperaNavbarDrop {
     from {
         opacity: 0;
         transform: translateY(-12px);
@@ -944,7 +1111,7 @@ body.motv-animations-ready .admin-card {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    body.motv-animations-ready .motv-reveal {
+    body.enpera-animations-ready .enpera-reveal {
         opacity: 1 !important;
         transform: none !important;
         filter: none !important;
@@ -956,10 +1123,10 @@ body.motv-animations-ready .admin-card {
     }
 }
 /* BLUR JAVÍTÁS - a szöveg soha ne maradjon homályos */
-body.motv-animations-ready .motv-reveal,
-body.motv-animations-ready .motv-reveal.motv-visible,
-body.motv-animations-ready .main-bg > section:first-child.motv-reveal,
-body.motv-animations-ready .main-bg > section:first-child.motv-reveal.motv-visible {
+body.enpera-animations-ready .enpera-reveal,
+body.enpera-animations-ready .enpera-reveal.enpera-visible,
+body.enpera-animations-ready .main-bg > section:first-child.enpera-reveal,
+body.enpera-animations-ready .main-bg > section:first-child.enpera-reveal.enpera-visible {
     filter: none !important;
 }
 /* DROPDOWN OVERLAY FIX - a menü legyen mindig kattintható a hero fölött */

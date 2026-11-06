@@ -2,7 +2,7 @@
 require_once __DIR__ . '/db.php';
 
 /**
- * A Diszkográfia oldal (bandatagok.php / diszkografia.php) szerkeszthető szövegeinek alapértelmezett értékei
+ * A Diszkográfia oldal (bandatagok.php / diszkografia.php) fix, nem szerkeszthető szövegei
  */
 function get_default_site_texts(): array {
     return [
@@ -28,63 +28,19 @@ function get_default_site_texts(): array {
 }
 
 /**
- * Diszkográfia oldalszövegek lekérése (adatbázis + alapértelmezett értékek összefésülve)
+ * Diszkográfia oldalszövegek lekérése (fix, nem szerkeszthető)
  */
 function db_get_site_texts(bool $forceRefresh = false): array {
-    static $cachedTexts = null;
-    if ($cachedTexts !== null && !$forceRefresh) {
-        return $cachedTexts;
-    }
-
-    $defaults = get_default_site_texts();
-    $raw = db_get_setting('site_texts', '');
-    if (!empty($raw)) {
-        $decoded = json_decode($raw, true);
-        if (is_array($decoded)) {
-            $filtered = array_intersect_key($decoded, $defaults);
-            $cachedTexts = array_merge($defaults, $filtered);
-            return $cachedTexts;
-        }
-    }
-
-    $cachedTexts = $defaults;
-    return $cachedTexts;
+    return get_default_site_texts();
 }
 
 /**
  * Egyetlen szövegmező lekérése kulcs alapján
  */
 function site_text(string $key, ?string $fallback = null): string {
-    $texts = db_get_site_texts();
+    $texts = get_default_site_texts();
     if (array_key_exists($key, $texts)) {
         return (string)$texts[$key];
     }
     return $fallback ?? '';
-}
-
-/**
- * Diszkográfia oldalszövegek mentése az adatbázisba
- */
-function db_save_site_texts(array $newTexts): void {
-    $defaults = get_default_site_texts();
-    $raw = db_get_setting('site_texts', '');
-    $decoded = (!empty($raw) && is_array(json_decode($raw, true))) ? json_decode($raw, true) : [];
-    $currentSaved = array_intersect_key($decoded, $defaults);
-
-    foreach ($newTexts as $key => $val) {
-        if (array_key_exists($key, $defaults)) {
-            $currentSaved[$key] = trim((string)$val);
-        }
-    }
-
-    db_set_setting('site_texts', json_encode($currentSaved, JSON_UNESCAPED_UNICODE));
-    db_get_site_texts(true);
-}
-
-/**
- * Diszkográfia oldalszövegek visszaállítása alapértelmezettre
- */
-function db_reset_site_texts(): void {
-    db_set_setting('site_texts', '{}');
-    db_get_site_texts(true);
 }

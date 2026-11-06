@@ -1,0 +1,491 @@
+/* ========================================================
+   N/A WEBSHOP – FEKETE-FEHÉR MONOKRÓM DESIGN (alap.css-hez illeszkedve)
+   ======================================================== */
+
+.webshop-hero {
+    min-height: 46vh;
+    background:
+        radial-gradient(circle at center, rgba(255, 255, 255, 0.08), transparent 45%),
+        linear-gradient(rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.96));
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+    padding: 88px 0 54px;
+}
+
+.webshop-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 45px 45px;
+    opacity: 0.35;
+    pointer-events: none;
+}
+
+body.lightmode .webshop-hero {
+    background:
+        radial-gradient(circle at center, rgba(0, 0, 0, 0.05), transparent 45%),
+        linear-gradient(rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.95));
+}
+
+.webshop-hero .container {
+    position: relative;
+    z-index: 1;
+}
+
+.webshop-title {
+    font-size: clamp(2.6rem, 7vw, 5.2rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: var(--text-main);
+    margin-bottom: 12px;
+}
+
+/* ========================================================
+   WEBSHOP FELSŐ SÁV / NAVIGÁCIÓ
+   ======================================================== */
+
+.shop-subnav {
+    background-color: var(--bg-section);
+    border-bottom: 1px solid var(--border-color);
+    padding: 14px 0;
+}
+
+.shop-subnav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.shop-cat-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.shop-cat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-card);
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    text-decoration: none;
+    transition: 0.22s ease;
+}
+
+.shop-cat-pill:hover,
+.shop-cat-pill.active {
+    background-color: var(--accent);
+    color: var(--accent-contrast);
+    border-color: var(--accent);
+}
+
+/* ========================================================
+   SZŰRÉS ÉS RENDEZÉS SÁV
+   ======================================================== */
+
+.shop-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 16px 20px;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    margin-bottom: 28px;
+}
+
+.shop-sort-select {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 7px 14px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.shop-sort-select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+/* ========================================================
+   KATEGÓRIA VÁLASZTÓ KÁRTYÁK
+   ======================================================== */
+
+.shop-category-card {
+    display: block;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--text-main);
+    box-shadow: 0 10px 28px var(--shadow-color);
+    transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
+    height: 100%;
+}
+
+.shop-category-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--accent);
+    color: var(--text-main);
+    box-shadow: 0 14px 34px var(--shadow-color), 0 0 18px var(--glow-color);
+}
+
+.shop-category-card-img {
+    aspect-ratio: 4 / 3;
+    background-color: var(--bg-section);
+    border-bottom: 1px solid var(--border-color);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.shop-category-card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%);
+    transition: transform 0.35s ease;
+}
+
+.shop-category-card:hover .shop-category-card-img img {
+    transform: scale(1.05);
+}
+
+.shop-category-card-body {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 1rem;
+}
+
+/* ========================================================
+   TERMÉKKÁRTYÁK (RÁCS ÉS KIEMELT LISTA)
+   ======================================================== */
+
+.shop-product-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 12px 32px var(--shadow-color);
+    transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
+}
+
+.shop-product-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--accent);
+    box-shadow: 0 16px 38px var(--shadow-color), 0 0 20px var(--glow-color);
+}
+
+.shop-product-thumb {
+    display: block;
+    position: relative;
+    aspect-ratio: 4 / 3;
+    background-color: var(--bg-section);
+    border-bottom: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.shop-product-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%);
+    transition: transform 0.38s ease;
+}
+
+.shop-product-card:hover .shop-product-thumb img {
+    transform: scale(1.05);
+}
+
+.shop-product-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background-color: var(--accent);
+    color: var(--accent-contrast);
+    padding: 4px 11px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.shop-product-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.shop-product-title {
+    font-size: 1.12rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 6px;
+}
+
+.shop-product-title a {
+    color: var(--text-main);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.shop-product-title a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+}
+
+.shop-product-price {
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--accent);
+    margin-bottom: 14px;
+}
+
+/* ========================================================
+   MEGNYITHATÓ EGYEDI TERMÉKOLDAL (?termek=ID)
+   ======================================================== */
+
+.product-detail-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: clamp(20px, 3.5vw, 38px);
+    box-shadow: 0 14px 40px var(--shadow-color);
+}
+
+.product-detail-main-img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background-color: var(--bg-section);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+}
+
+.product-detail-main-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: grayscale(100%);
+}
+
+.product-detail-thumbs {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.product-thumb-btn {
+    width: 104px;
+    height: 80px;
+    padding: 0;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-section);
+    overflow: hidden;
+    cursor: pointer;
+    opacity: 0.65;
+    transition: 0.22s ease;
+}
+
+.product-thumb-btn:hover,
+.product-thumb-btn.active {
+    opacity: 1;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+}
+
+.product-thumb-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%);
+}
+
+.product-detail-title {
+    font-size: clamp(1.8rem, 3.5vw, 2.7rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-main);
+    margin-bottom: 10px;
+}
+
+.product-detail-price {
+    font-size: 1.75rem;
+    font-weight: 900;
+    color: var(--accent);
+    margin-bottom: 4px;
+}
+
+/* Méretválasztó kapszulagombok (szigorúan fekete-fehér) */
+.size-pill-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.size-pill-btn {
+    min-width: 58px;
+    height: 42px;
+    padding: 0 16px;
+    border-radius: 999px;
+    border: 1px solid var(--border-hover);
+    background-color: transparent;
+    color: var(--text-main);
+    font-size: 0.9rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.size-pill-btn:hover {
+    border-color: var(--accent);
+}
+
+.size-pill-btn.active {
+    background-color: var(--accent);
+    color: var(--accent-contrast);
+    border-color: var(--accent);
+}
+
+/* Mennyiség léptető (- 1 +) */
+.qty-stepper {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--border-hover);
+    border-radius: 12px;
+    background-color: var(--bg-main);
+    overflow: hidden;
+}
+
+.qty-stepper-btn {
+    width: 44px;
+    height: 44px;
+    border: none;
+    background: transparent;
+    color: var(--text-main);
+    font-size: 1.2rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.qty-stepper-btn:hover {
+    background-color: var(--bg-card-hover);
+}
+
+.qty-stepper-input {
+    width: 56px;
+    height: 44px;
+    border: none;
+    background: transparent;
+    color: var(--text-main);
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 800;
+    -moz-appearance: textfield;
+}
+
+.qty-stepper-input::-webkit-outer-spin-button,
+.qty-stepper-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* ========================================================
+   KOSÁR, SZÁLLÍTÁS ÉS FIZETÉS SZEKCIÓ (MONOKRÓM)
+   ======================================================== */
+
+.checkout-panel {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 22px;
+    padding: clamp(20px, 3vw, 32px);
+    box-shadow: 0 12px 34px var(--shadow-color);
+}
+
+.shipping-option-card,
+.payment-option-card {
+    display: block;
+    background-color: var(--bg-section);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.shipping-option-card:hover,
+.payment-option-card:hover {
+    border-color: var(--border-hover);
+}
+
+.shipping-option-card.active,
+.payment-option-card.active {
+    border-color: var(--accent);
+    background-color: var(--bg-card-hover);
+    box-shadow: 0 0 0 1px var(--accent);
+}
+
+.shop-input {
+    background-color: var(--bg-main) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px;
+    padding: 10px 14px;
+}
+
+.shop-input:focus {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 0.2rem var(--glow-color) !important;
+}
+
+.shop-notice-box {
+    background-color: var(--bg-card);
+    border: 1px solid var(--accent);
+    color: var(--text-main);
+    border-radius: 16px;
+    padding: 18px 22px;
+}

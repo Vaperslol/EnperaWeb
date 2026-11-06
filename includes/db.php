@@ -567,7 +567,7 @@ function seed_discography_if_needed(PDO $pdo): void {
 function insert_default_discography_rows(PDO $pdo): void {
     $defaults = [
         [
-            'title' => 'Maw of the Void',
+            'title' => 'Enpera',
             'category' => 'lemez',
             'release_date' => '2026-10-25',
             'cover_image' => '',
@@ -577,7 +577,7 @@ function insert_default_discography_rows(PDO $pdo): void {
                 ['title' => 'Gyújtsuk Fel', 'duration' => '3:48', 'lyrics' => "Szikra pattan a csend falán,\nNincs már fék az éjszakán.\nGyújtsuk fel a szürke eget,\nHallja meg mindenki a neved!"],
                 ['title' => 'Szürke Beton', 'duration' => '4:05', 'lyrics' => "Panelárnyék, hideg falak,\nDe a mélyben a dobok szólnak."],
                 ['title' => 'Árnyékok Közt', 'duration' => '4:30', 'lyrics' => ''],
-                ['title' => 'Maw of the Void', 'duration' => '5:12', 'lyrics' => 'A lemez címadó dala: lassú, mázsás breakdown és feszes duplázó témák.'],
+                ['title' => 'Enpera', 'duration' => '5:12', 'lyrics' => 'A lemez címadó dala: lassú, mázsás breakdown és feszes duplázó témák.'],
                 ['title' => 'Töréspont', 'duration' => '3:39', 'lyrics' => ''],
                 ['title' => 'Visszhang', 'duration' => '4:18', 'lyrics' => ''],
                 ['title' => 'Utolsó Akkord', 'duration' => '4:50', 'lyrics' => '']
@@ -759,4 +759,6 @@ function calculate_release_duration(array $tracks): string {
 }
 
 require_once __DIR__ . '/content.php';
+require_once __DIR__ . '/shop_db.php';
+
 

@@ -109,17 +109,51 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         redirect_admin(ADMIN_ENTRY_FILE . '#szinek');
     }
 
-    // 1.6. DISZKOGRÁFIA OLDALSZÖVEGEK ÉS KIADVÁNYOK MENTÉSE
-    if ($action === 'save_site_texts') {
+    // 1.5. WEBSHOP TÁRGY MENTÉSE ÉS BERENDELÉS ÁLLAPOT FRISSÍTÉSE
+    if ($action === 'save_shop_product') {
         require_admin('index.php');
 
-        $textsInput = isset($_POST['texts']) && is_array($_POST['texts']) ? $_POST['texts'] : [];
-        db_save_site_texts($textsInput);
+        $editId = !empty($_POST['edit_id']) ? (int)$_POST['edit_id'] : null;
+        $uploadedImg = handle_file_upload('prodImage');
+        $existingImg = trim($_POST['existing_image'] ?? '');
+        $finalImg = $uploadedImg ?: $existingImg;
 
-        set_flash('success', 'A Diszkográfia oldal szövegei sikeresen mentve!');
-        redirect_admin(ADMIN_ENTRY_FILE . '#szovegek');
+        $prodData = [
+            'name' => trim($_POST['prodName'] ?? ''),
+            'category' => $_POST['prodCategory'] ?? 'ruhazat',
+            'price' => (int)($_POST['prodPrice'] ?? 0),
+            'stock' => (int)($_POST['prodStock'] ?? 0),
+            'sizes' => trim($_POST['prodSizes'] ?? ''),
+            'description' => trim($_POST['prodDescription'] ?? ''),
+            'image' => $finalImg,
+            'featured' => !empty($_POST['prodFeatured']) ? 1 : 0
+        ];
+
+        if ($editId) {
+            shop_update_product($editId, $prodData);
+            set_flash('success', 'Webshop tárgy (' . $prodData['name'] . ') sikeresen frissítve.');
+        } else {
+            shop_create_product($prodData);
+            set_flash('success', 'Új tárgy (' . $prodData['name'] . ') sikeresen felrakva a webshopba.');
+        }
+        redirect_admin(ADMIN_ENTRY_FILE . '#webshop');
     }
 
+    if ($action === 'update_order_status') {
+        require_admin('index.php');
+
+        $orderId = (int)($_POST['order_id'] ?? 0);
+        $ordStatus = $_POST['order_status'] ?? 'new';
+        $payStatus = $_POST['payment_status'] ?? 'pending';
+
+        if ($orderId > 0) {
+            shop_update_order_status($orderId, $ordStatus, $payStatus);
+            set_flash('success', 'A berendelés állapota sikeresen frissítve!');
+        }
+        redirect_admin(ADMIN_ENTRY_FILE . '#webshop');
+    }
+
+    // 1.6. DISZKOGRÁFIA KIADVÁNYOK MENTÉSE (A diszkográfia oldalszövegek nem szerkeszthetők)
     if ($action === 'save_discography') {
         require_admin('index.php');
 
@@ -295,7 +329,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
 // -------------------------------------------------------------
 $action = $_GET['action'] ?? '';
 
-if (!empty($action) || isset($_GET['edit_concert']) || isset($_GET['edit_news']) || isset($_GET['edit_timeline']) || isset($_GET['edit_discography'])) {
+if (!empty($action) || isset($_GET['edit_concert']) || isset($_GET['edit_news']) || isset($_GET['edit_timeline']) || isset($_GET['edit_discography']) || isset($_GET['edit_product']) || isset($_GET['inspect_db'])) {
     // Ha valaki jogosultság nélkül próbálja megnyitni a védett admin funkciókat,
     // irányítsuk át azonnal a főoldalra (index.php)
     require_admin('index.php');
@@ -384,12 +418,6 @@ if (!empty($action)) {
         set_flash('success', 'A weboldal színei visszaállítva az alapértelmezett fekete-fehérre.');
         redirect_admin(ADMIN_ENTRY_FILE . '#szinek');
     }
-    if ($action === 'reset_site_texts') {
-        require_admin('index.php');
-        db_reset_site_texts();
-        set_flash('success', 'A Diszkográfia oldal szövegei visszaállítva az eredeti alapértelmezett értékekre.');
-        redirect_admin(ADMIN_ENTRY_FILE . '#szovegek');
-    }
     if ($action === 'delete_discography' && $id) {
         require_admin('index.php');
         db_delete_discography($id);
@@ -401,6 +429,73 @@ if (!empty($action)) {
         db_reset_discography_defaults();
         set_flash('success', 'Alapértelmezett diszkográfia (Lemez, Kislemez, Single) visszaállítva.');
         redirect_admin(ADMIN_ENTRY_FILE . '#szovegek');
+    }
+    if ($action === 'delete_shop_product' && $id) {
+        require_admin('index.php');
+        shop_delete_product($id);
+        set_flash('success', 'Tárgy törölve a webshopból.');
+        redirect_admin(ADMIN_ENTRY_FILE . '#webshop');
+    }
+    if ($action === 'reset_shop_products') {
+        require_admin('index.php');
+        shop_reset_products_defaults();
+        set_flash('success', 'Alapértelmezett webshop tárgyak visszaállítva.');
+        redirect_admin(ADMIN_ENTRY_FILE . '#webshop');
+    }
+    if ($action === 'delete_shop_order' && $id) {
+        require_admin('index.php');
+        shop_delete_order($id);
+        set_flash('success', 'Berendelés törölve.');
+        redirect_admin(ADMIN_ENTRY_FILE . '#webshop');
+    }
+    if ($action === 'clear_shop_orders') {
+        require_admin('index.php');
+        shop_clear_all_orders();
+        set_flash('success', 'Összes berendelés törölve.');
+        redirect_admin(ADMIN_ENTRY_FILE . '#webshop');
+    }
+    if ($action === 'db_delete_row') {
+        require_admin('index.php');
+        $dbKey = $_GET['db'] ?? 'shop';
+        $tbl = $_GET['table'] ?? '';
+        $pkCol = $_GET['pk_col'] ?? 'id';
+        $pkVal = $_GET['pk_val'] ?? '';
+        if (db_admin_delete_row($dbKey, $tbl, $pkCol, $pkVal)) {
+            set_flash('success', "Rekord törölve a(z) {$tbl} táblából.");
+        }
+        redirect_admin(ADMIN_ENTRY_FILE . '?inspect_db=' . urlencode($dbKey) . '&inspect_table=' . urlencode($tbl) . '#adatbazis');
+    }
+    if ($action === 'db_truncate_table') {
+        require_admin('index.php');
+        $dbKey = $_GET['db'] ?? 'shop';
+        $tbl = $_GET['table'] ?? '';
+        if (db_admin_truncate_table($dbKey, $tbl)) {
+            set_flash('success', "A(z) {$tbl} tábla sikeresen kiürítve.");
+        }
+        redirect_admin(ADMIN_ENTRY_FILE . '?inspect_db=' . urlencode($dbKey) . '&inspect_table=' . urlencode($tbl) . '#adatbazis');
+    }
+    if ($action === 'db_vacuum') {
+        require_admin('index.php');
+        $dbKey = $_GET['db'] ?? 'shop';
+        db_admin_vacuum($dbKey);
+        set_flash('success', 'Adatbázis sikeresen optimalizálva (VACUUM)!');
+        redirect_admin(ADMIN_ENTRY_FILE . '?inspect_db=' . urlencode($dbKey) . '#adatbazis');
+    }
+    if ($action === 'db_export_json') {
+        require_admin('index.php');
+        $dbKey = $_GET['db'] ?? 'shop';
+        $meta = get_allowed_admin_tables();
+        if (isset($meta[$dbKey])) {
+            $exportData = [];
+            foreach (array_keys($meta[$dbKey]['tables']) as $tName) {
+                $exportData[$tName] = db_admin_get_table_rows($dbKey, $tName, 500);
+            }
+            header('Content-Type: application/json; charset=utf-8');
+            header('Content-Disposition: attachment; filename="' . $dbKey . '-backup-' . date('Y-m-d') . '.json"');
+            echo json_encode($exportData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        redirect_admin(ADMIN_ENTRY_FILE . '#adatbazis');
     }
 }
 
@@ -427,6 +522,12 @@ $editDiscography = null;
 if (isset($_GET['edit_discography'])) {
     require_admin('index.php');
     $editDiscography = db_get_discography_by_id((int)$_GET['edit_discography']);
+}
+
+$editShopProduct = null;
+if (isset($_GET['edit_product'])) {
+    require_admin('index.php');
+    $editShopProduct = shop_get_product_by_id((int)$_GET['edit_product']);
 }
 
 $flash = get_flash();
@@ -511,39 +612,26 @@ require_once __DIR__ . '/includes/header.php';
         <section class="admin-hero">
             <div class="container text-center">
                 <p class="text-accent fw-bold text-uppercase mb-2">
-                    Tartalomkezelő Központ
+                    Tartalomkezelő Központ • Lapozható Weblap Szerkesztő
                 </p>
                 <h1 class="admin-title">
                     Admin Vezérlőpult
                 </h1>
                 <p class="lead text-muted-custom mt-3 mx-auto" style="max-width: 850px;">
-                    Üdvözlünk, <strong><?= e($_SESSION['admin_username'] ?? 'Admin') ?></strong>! Itt kezelheted a teljes weboldal összes tartalmát.
+                    Üdvözlünk, <strong><?= e($_SESSION['admin_username'] ?? 'Admin') ?></strong>! Kattints a <strong>Balra / Jobbra</strong> lapozó gombokra a weblapok szerkesztéséhez, a Webshop tárgyak és berendelések kezeléséhez, valamint az adatbázisokhoz.
                 </p>
 
-                <div class="d-flex justify-content-center gap-2 mt-4 flex-wrap">
-                    <a href="#szinek" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
-                        <svg class="line-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;">
-                            <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/>
-                            <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/>
-                            <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/>
-                            <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/>
-                            <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
-                        </svg>
-                        <span>Színek</span>
-                    </a>
-                    <a href="#szovegek" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
-                        <svg class="line-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;">
-                            <circle cx="12" cy="12" r="10"/>
-                            <circle cx="12" cy="12" r="3"/>
-                        </svg>
-                        <span>Diszkográfia</span>
-                    </a>
-                    <a href="#koncertek" class="btn btn-sm btn-outline-secondary">Koncertek</a>
-                    <a href="#galeria" class="btn btn-sm btn-outline-secondary">Galéria</a>
-                    <a href="#hirek" class="btn btn-sm btn-outline-secondary">Hírek</a>
-                    <a href="#timeline" class="btn btn-sm btn-outline-secondary">Timeline</a>
-                    <a href="#uzenetek" class="btn btn-sm btn-outline-secondary">Üzenetek</a>
-                    <a href="<?= e(ADMIN_ENTRY_FILE) ?>?action=logout" class="btn btn-sm btn-outline-light ms-lg-3">Kijelentkezés</a>
+                <div class="d-flex justify-content-center gap-2 mt-4 flex-wrap" id="adminQuickTabs">
+                    <a href="#szinek" data-goto-page="szinek" class="btn btn-sm btn-outline-secondary admin-tab-pill">1. Színek</a>
+                    <a href="#webshop" data-goto-page="webshop" class="btn btn-sm btn-outline-secondary admin-tab-pill">2. Webshop & Berendelések</a>
+                    <a href="#adatbazis" data-goto-page="adatbazis" class="btn btn-sm btn-outline-secondary admin-tab-pill">3. Adatbázis</a>
+                    <a href="#szovegek" data-goto-page="szovegek" class="btn btn-sm btn-outline-secondary admin-tab-pill">4. Diszkográfia</a>
+                    <a href="#koncertek" data-goto-page="koncertek" class="btn btn-sm btn-outline-secondary admin-tab-pill">5. Koncertek</a>
+                    <a href="#galeria" data-goto-page="galeria" class="btn btn-sm btn-outline-secondary admin-tab-pill">6. Galéria</a>
+                    <a href="#hirek" data-goto-page="hirek" class="btn btn-sm btn-outline-secondary admin-tab-pill">7. Hírek</a>
+                    <a href="#timeline" data-goto-page="timeline" class="btn btn-sm btn-outline-secondary admin-tab-pill">8. Timeline</a>
+                    <a href="#uzenetek" data-goto-page="uzenetek" class="btn btn-sm btn-outline-secondary admin-tab-pill">9. Üzenetek</a>
+                    <a href="<?= e(ADMIN_ENTRY_FILE) ?>?action=logout" class="btn btn-sm btn-outline-light ms-lg-2">Kijelentkezés</a>
                 </div>
             </div>
         </section>
@@ -556,8 +644,32 @@ require_once __DIR__ . '/includes/header.php';
             </div>
         <?php endif; ?>
 
+        <!-- FELSŐ BALRA-JOBBRA LAPOZÓ SÁV -->
+        <div class="container mt-4">
+            <div class="admin-pager-bar">
+                <button type="button" class="btn btn-custom admin-pager-btn" id="adminPrevBtnTop">
+                    <svg class="line-icon me-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                    <span>Balra (Előző weblap)</span>
+                </button>
+
+                <div class="admin-pager-status text-center">
+                    <div class="small text-muted-custom text-uppercase fw-bold" id="adminPagerCounterTop">1 / 9. weblap</div>
+                    <div class="h5 text-accent fw-bold mb-0" id="adminPagerTitleTop">Főoldal & Színvilág</div>
+                </div>
+
+                <button type="button" class="btn btn-custom admin-pager-btn" id="adminNextBtnTop">
+                    <span>Jobbra (Következő weblap)</span>
+                    <svg class="line-icon ms-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
         <!-- 0. WEBOLDAL SZÍNVILÁG & TESTRESZABÁS -->
-        <section class="admin-section mb-5" id="szinek">
+        <section class="admin-section admin-page-panel" id="szinek" data-admin-page="szinek" data-admin-title="Főoldal & Színvilág">
             <div class="container">
                 <div class="admin-section-header text-center mb-4">
                     <h2 class="text-accent d-flex align-items-center justify-content-center gap-2">
@@ -721,10 +833,12 @@ require_once __DIR__ . '/includes/header.php';
             </div>
         </section>
 
+        <?php require __DIR__ . '/includes/admin_webshop_section.php'; ?>
+
         <?php require __DIR__ . '/includes/admin_texts_section.php'; ?>
 
         <!-- 1. KONCERTEK KEZELÉSE -->
-        <section class="admin-section" id="koncertek">
+        <section class="admin-section admin-page-panel" id="koncertek" data-admin-page="koncertek" data-admin-title="Koncertek Oldal">
             <div class="container">
                 <div class="row g-4">
                     <div class="col-lg-6">
@@ -865,7 +979,7 @@ require_once __DIR__ . '/includes/header.php';
         </section>
 
         <!-- 2. GALÉRIA KEZELÉSE -->
-        <section class="admin-section-alt" id="galeria">
+        <section class="admin-section-alt admin-page-panel" id="galeria" data-admin-page="galeria" data-admin-title="Galéria Oldal">
             <div class="container">
                 <div class="admin-section-header text-center mb-4">
                     <h2 class="text-accent">Galéria kezelése</h2>
@@ -943,7 +1057,7 @@ require_once __DIR__ . '/includes/header.php';
         </section>
 
         <!-- 3. HÍREK KEZELÉSE -->
-        <section class="admin-section" id="hirek">
+        <section class="admin-section admin-page-panel" id="hirek" data-admin-page="hirek" data-admin-title="Hírek Oldal">
             <div class="container">
                 <div class="admin-section-header text-center mb-4">
                     <h2 class="text-accent">Hírek kezelése</h2>
@@ -1036,7 +1150,7 @@ require_once __DIR__ . '/includes/header.php';
         </section>
 
         <!-- 4. TIMELINE KEZELÉSE -->
-        <section class="admin-section-alt" id="timeline">
+        <section class="admin-section-alt admin-page-panel" id="timeline" data-admin-page="timeline" data-admin-title="Timeline Oldal">
             <div class="container">
                 <div class="admin-section-header text-center mb-4">
                     <h2 class="text-accent">Timeline kezelése</h2>
@@ -1126,7 +1240,7 @@ require_once __DIR__ . '/includes/header.php';
         </section>
 
         <!-- 5. ÜZENETEK KEZELÉSE -->
-        <section class="admin-section" id="uzenetek">
+        <section class="admin-section admin-page-panel" id="uzenetek" data-admin-page="uzenetek" data-admin-title="Kapcsolat & Üzenetek Oldal">
             <div class="container">
                 <div class="admin-section-header text-center mb-4">
                     <h2 class="text-accent">Beérkezett üzenetek</h2>
@@ -1183,6 +1297,30 @@ require_once __DIR__ . '/includes/header.php';
                 </div>
             </div>
         </section>
+
+        <!-- ALSÓ BALRA-JOBBRA LAPOZÓ SÁV -->
+        <div class="container mb-5">
+            <div class="admin-pager-bar">
+                <button type="button" class="btn btn-custom admin-pager-btn" id="adminPrevBtnBottom">
+                    <svg class="line-icon me-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                    <span>Balra (Előző weblap)</span>
+                </button>
+
+                <div class="admin-pager-status text-center">
+                    <div class="small text-muted-custom text-uppercase fw-bold" id="adminPagerCounterBottom">1 / 9. weblap</div>
+                    <div class="h5 text-accent fw-bold mb-0" id="adminPagerTitleBottom">Főoldal & Színvilág</div>
+                </div>
+
+                <button type="button" class="btn btn-custom admin-pager-btn" id="adminNextBtnBottom">
+                    <span>Jobbra (Következő weblap)</span>
+                    <svg class="line-icon ms-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
 
     <?php endif; ?>
 </main>
@@ -1335,6 +1473,109 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     updateThemePreview();
+
+    // =========================================================================
+    // BALRA-JOBBRA KATTINTHATÓ WEBLAP LAPOZÓ (ADMIN PAGINATOR)
+    // =========================================================================
+    const panels = Array.from(document.querySelectorAll('.admin-page-panel'));
+    const quickTabs = Array.from(document.querySelectorAll('.admin-tab-pill'));
+    const prevTop = document.getElementById('adminPrevBtnTop');
+    const nextTop = document.getElementById('adminNextBtnTop');
+    const prevBottom = document.getElementById('adminPrevBtnBottom');
+    const nextBottom = document.getElementById('adminNextBtnBottom');
+    const counterTop = document.getElementById('adminPagerCounterTop');
+    const titleTop = document.getElementById('adminPagerTitleTop');
+    const counterBottom = document.getElementById('adminPagerCounterBottom');
+    const titleBottom = document.getElementById('adminPagerTitleBottom');
+
+    let currentIndex = 0;
+
+    function showAdminPage(index, updateHash = true) {
+        if (!panels.length) return;
+        if (index < 0) index = panels.length - 1;
+        if (index >= panels.length) index = 0;
+        currentIndex = index;
+
+        const activePanel = panels[currentIndex];
+        const pageKey = activePanel.getAttribute('data-admin-page') || activePanel.id;
+        const pageTitle = activePanel.getAttribute('data-admin-title') || pageKey;
+
+        panels.forEach((p, idx) => {
+            if (idx === currentIndex) {
+                p.classList.remove('d-none');
+            } else {
+                p.classList.add('d-none');
+            }
+        });
+
+        quickTabs.forEach(tab => {
+            if (tab.getAttribute('data-goto-page') === pageKey) {
+                tab.classList.add('active');
+            } else {
+                tab.classList.remove('active');
+            }
+        });
+
+        const countText = (currentIndex + 1) + ' / ' + panels.length + '. weblap';
+        if (counterTop) counterTop.textContent = countText;
+        if (titleTop) titleTop.textContent = pageTitle;
+        if (counterBottom) counterBottom.textContent = countText;
+        if (titleBottom) titleBottom.textContent = pageTitle;
+
+        if (updateHash && window.history && window.history.replaceState) {
+            window.history.replaceState(null, '', '#' + pageKey);
+        }
+    }
+
+    function findPageIndexByKey(key) {
+        if (!key) return -1;
+        key = key.replace(/^#/, '');
+        return panels.findIndex(p => (p.getAttribute('data-admin-page') === key || p.id === key));
+    }
+
+    if (panels.length) {
+        let initialKey = window.location.hash ? window.location.hash.replace(/^#/, '') : '';
+        const urlParams = new URLSearchParams(window.location.search);
+        if (!initialKey) {
+            if (urlParams.has('edit_product')) initialKey = 'webshop';
+            else if (urlParams.has('inspect_db') || urlParams.has('inspect_table')) initialKey = 'adatbazis';
+            else if (urlParams.has('edit_discography')) initialKey = 'szovegek';
+            else if (urlParams.has('edit_concert')) initialKey = 'koncertek';
+            else if (urlParams.has('edit_news')) initialKey = 'hirek';
+            else if (urlParams.has('edit_timeline')) initialKey = 'timeline';
+        }
+        const foundIdx = findPageIndexByKey(initialKey);
+        showAdminPage(foundIdx >= 0 ? foundIdx : 0, false);
+
+        if (prevTop) prevTop.addEventListener('click', () => showAdminPage(currentIndex - 1));
+        if (nextTop) nextTop.addEventListener('click', () => showAdminPage(currentIndex + 1));
+        if (prevBottom) prevBottom.addEventListener('click', () => {
+            showAdminPage(currentIndex - 1);
+            window.scrollTo({ top: 220, behavior: 'smooth' });
+        });
+        if (nextBottom) nextBottom.addEventListener('click', () => {
+            showAdminPage(currentIndex + 1);
+            window.scrollTo({ top: 220, behavior: 'smooth' });
+        });
+
+        quickTabs.forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                const targetKey = this.getAttribute('data-goto-page');
+                const idx = findPageIndexByKey(targetKey);
+                if (idx >= 0) {
+                    e.preventDefault();
+                    showAdminPage(idx);
+                }
+            });
+        });
+
+        window.addEventListener('hashchange', function() {
+            const idx = findPageIndexByKey(window.location.hash);
+            if (idx >= 0) {
+                showAdminPage(idx, false);
+            }
+        });
+    }
 });
 </script>
 
